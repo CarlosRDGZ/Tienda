@@ -1,14 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tienda;
 
-/**
- *
- * @author CarlosFco
- */
+import java.io.File;
+
 public class Tienda extends javax.swing.JFrame {
 
     /**
@@ -101,7 +94,15 @@ public class Tienda extends javax.swing.JFrame {
                 new Tienda().setVisible(true);
                 System.out.println("Main thread");
             }
-        });        
+        });
+       java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                System.out.println("Side thread");
+                File[] paths = File.listRoots();
+                for(File path:paths)
+                    System.out.println(path);
+            }
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
