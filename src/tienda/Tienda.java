@@ -1,14 +1,24 @@
 package tienda;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Tienda extends javax.swing.JFrame implements Runnable{
+public class Tienda extends javax.swing.JFrame implements Runnable {
+    
+    private ArrayList<Producto> lista_productos;
+    private ArrayList<Tarjeta> lista_tarjetas;
+    private ArrayList<Administrador> lista_admins;
+    
+    private ArchivoAdministrador archivo_admin;
     
     public Tienda() {
         initComponents();
         lblProtectorPantalla.setVisible(false);
+        
+        archivo_admin = new ArchivoAdministrador("admins");
+        lista_admins = new ArrayList();
     }
 
     /**
@@ -22,6 +32,11 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
 
         frmNvProducto = new javax.swing.JFrame();
         frmNvTarjeta = new javax.swing.JFrame();
+        frmNvAdmin = new javax.swing.JFrame();
+        txtNvAdm = new javax.swing.JTextField();
+        pswNvAdm = new javax.swing.JPasswordField();
+        btnNvAdmin = new javax.swing.JButton();
+        btnLogIn = new javax.swing.JButton();
         lblProtectorPantalla = new javax.swing.JLabel();
 
         javax.swing.GroupLayout frmNvProductoLayout = new javax.swing.GroupLayout(frmNvProducto.getContentPane());
@@ -44,6 +59,52 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         frmNvTarjetaLayout.setVerticalGroup(
             frmNvTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 300, Short.MAX_VALUE)
+        );
+
+        pswNvAdm.setText("jPasswordField1");
+
+        btnNvAdmin.setText("jButton1");
+        btnNvAdmin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNvAdminActionPerformed(evt);
+            }
+        });
+
+        btnLogIn.setText("jButton1");
+        btnLogIn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogInActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout frmNvAdminLayout = new javax.swing.GroupLayout(frmNvAdmin.getContentPane());
+        frmNvAdmin.getContentPane().setLayout(frmNvAdminLayout);
+        frmNvAdminLayout.setHorizontalGroup(
+            frmNvAdminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(frmNvAdminLayout.createSequentialGroup()
+                .addGap(104, 104, 104)
+                .addGroup(frmNvAdminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(frmNvAdminLayout.createSequentialGroup()
+                        .addComponent(btnLogIn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnNvAdmin))
+                    .addGroup(frmNvAdminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(txtNvAdm)
+                        .addComponent(pswNvAdm, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)))
+                .addContainerGap(142, Short.MAX_VALUE))
+        );
+        frmNvAdminLayout.setVerticalGroup(
+            frmNvAdminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(frmNvAdminLayout.createSequentialGroup()
+                .addGap(80, 80, 80)
+                .addComponent(txtNvAdm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(34, 34, 34)
+                .addComponent(pswNvAdm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
+                .addGroup(frmNvAdminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnNvAdmin)
+                    .addComponent(btnLogIn))
+                .addContainerGap(95, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -70,6 +131,21 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnNvAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNvAdminActionPerformed
+        Administrador admin = Controlador.crearAdmin(txtNvAdm.getText(), pswNvAdm.getText());
+        lista_admins.add(admin);
+        archivo_admin.grabarRegistro(admin, archivo_admin.numeroDeRegistros());
+        frmNvAdmin.setVisible(false);
+    }//GEN-LAST:event_btnNvAdminActionPerformed
+
+    private void btnLogInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogInActionPerformed
+        for(Administrador admin:lista_admins) {
+            if(admin.equals(txtNvAdm.getText()) &&
+                    Controlador.verificarContrasenia(admin.getContrasenia(), pswNvAdm.getText()))
+                frmNvAdmin.setVisible(false);
+        }
+    }//GEN-LAST:event_btnLogInActionPerformed
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -78,7 +154,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -94,9 +170,9 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         }
         //</editor-fold>
 
-       Tienda tienda = new Tienda();
-       tienda.setVisible(true);
-       tienda.run();
+        Tienda tienda = new Tienda();
+        tienda.setVisible(true);
+        tienda.run();
     }
     
     public void run() {
@@ -125,6 +201,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
             }
             
             lblProtectorPantalla.setVisible(true);
+            frmNvAdmin.setVisible(true);
 
         } catch (InterruptedException ex) {
             Logger.getLogger(Tienda.class.getName()).log(Level.SEVERE, null, ex);
@@ -132,8 +209,13 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnLogIn;
+    private javax.swing.JButton btnNvAdmin;
+    private javax.swing.JFrame frmNvAdmin;
     private javax.swing.JFrame frmNvProducto;
     private javax.swing.JFrame frmNvTarjeta;
     private javax.swing.JLabel lblProtectorPantalla;
+    private javax.swing.JPasswordField pswNvAdm;
+    private javax.swing.JTextField txtNvAdm;
     // End of variables declaration//GEN-END:variables
 }
