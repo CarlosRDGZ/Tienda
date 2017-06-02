@@ -77,7 +77,7 @@ public class ArchivoProducto extends ArchivoAbstracto
     
     public ArrayList<Producto> leerTodos()
     {
-        ArrayList<Producto> todos = new ArrayList();
+        ArrayList<Producto > todos = new ArrayList();
         for(int i = 0; i < numeroDeRegistros(); i++)
             todos.add(null);
         return todos;
