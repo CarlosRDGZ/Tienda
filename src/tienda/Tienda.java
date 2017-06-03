@@ -1,21 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tienda;
 
-/**
- *
- * @author CarlosFco
- */
-public class Tienda extends javax.swing.JFrame {
+import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-    /**
-     * Creates new form Tienda
-     */
+public class Tienda extends javax.swing.JFrame implements Runnable{
+    
     public Tienda() {
         initComponents();
+        lblProtectorPantalla.setVisible(false);
     }
 
     /**
@@ -29,6 +22,7 @@ public class Tienda extends javax.swing.JFrame {
 
         frmNvProducto = new javax.swing.JFrame();
         frmNvTarjeta = new javax.swing.JFrame();
+        lblProtectorPantalla = new javax.swing.JLabel();
 
         javax.swing.GroupLayout frmNvProductoLayout = new javax.swing.GroupLayout(frmNvProducto.getContentPane());
         frmNvProducto.getContentPane().setLayout(frmNvProductoLayout);
@@ -54,23 +48,28 @@ public class Tienda extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        lblProtectorPantalla.setText("Tarjeta Encontrada");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(144, 144, 144)
+                .addComponent(lblProtectorPantalla)
+                .addContainerGap(163, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(125, 125, 125)
+                .addComponent(lblProtectorPantalla)
+                .addContainerGap(161, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -95,17 +94,46 @@ public class Tienda extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Tienda().setVisible(true);
-                System.out.println("Main thread");
-            }
-        });        
+       Tienda tienda = new Tienda();
+       tienda.setVisible(true);
+       tienda.run();
     }
+    
+    public void run() {
+        try
+        {
+            System.out.println("Main thread");
+            boolean fileFound = false;
+            while(fileFound == false){
 
+                File[] paths = File.listRoots();
+
+                for(File path:paths) {
+                    File tarjeta = new File(path.toString() + "/Tarjeta","Tarjeta.txt");
+
+                    if(tarjeta.exists()) {
+                        System.out.println("Tajeta Encontrada");
+                        fileFound = true;
+                        break;
+                    }
+                    else {
+                        System.out.println("Tarjeta No Encontrada");
+                    }
+                }
+
+                Thread.sleep(2000);
+            }
+            
+            lblProtectorPantalla.setVisible(true);
+
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Tienda.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFrame frmNvProducto;
     private javax.swing.JFrame frmNvTarjeta;
+    private javax.swing.JLabel lblProtectorPantalla;
     // End of variables declaration//GEN-END:variables
 }
