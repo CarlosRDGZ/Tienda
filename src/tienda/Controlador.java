@@ -56,52 +56,43 @@ public final class Controlador {
     }
     
     public static Administrador crearAdmin(String usuario, String contrasenia) {
-        String subContra1 = contrasenia.substring(0,contrasenia.length()/2);
-        String subContra2 = contrasenia.substring(contrasenia.length()/2);
-        
-        char[] caract = new char[contrasenia.length()];
+        String sub1 = contrasenia.substring(0, contrasenia.length()/2);
+        String sub2 = contrasenia.substring((contrasenia.length()/2));
+        System.out.println(sub1);
+        System.out.println(sub2);
+        StringBuilder contra = new StringBuilder();
         
         for(int i = 0; i < contrasenia.length(); i++) {
-            int chrct;
             if(i % 2 == 0) {
-                chrct = (int) subContra2.charAt(i/2) + 15;
-                caract[i] = (char) chrct;
+                int crct = (int) sub2.charAt(i/2) + 5;
+                contra.append((char)crct);
             }
             else {
-                chrct = (int) subContra2.charAt(i/2) + 15;
-                caract[i] = (char) chrct;
+                int crct = (int) sub1.charAt(i/2) + 3;
+                contra.append((char)crct);
             }
-                
         }
         
-        String contra = new String(caract);
-        return new Administrador(usuario, contra);
+        return new Administrador(usuario, contra.toString());
     }
     
     public static boolean verificarContrasenia(String contraSistema, String contraUsuario) {
-        char[] caract1 = new char[contraSistema.length()];
-        char[] caract2;
-        if(contraSistema.length() % 2 == 0)
-            caract2 = new char[contraSistema.length()/2];
-        else
-            caract2 = new char[contraSistema.length()/2 + 1];
-
+        StringBuilder sub1 = new StringBuilder();
+        StringBuilder sub2 = new StringBuilder();
+        
         for(int i = 0; i < contraSistema.length(); i++) {
-            int chrct;
             if(i % 2 == 0) {
-                chrct = (int) contraSistema.charAt(i) -15;
-                caract2[i/2] = (char) chrct;
+                int crct = (int) contraSistema.charAt(i) - 5;
+                sub2.append((char)crct);
+                System.out.println(sub2.toString());
             }
             else {
-               chrct = (int) contraSistema.charAt(i) -15;
-               caract1[i/2] = (char) chrct; 
+               int crct = (int) contraSistema.charAt(i) - 3;
+                sub1.append((char)crct);
+                System.out.println(sub1.toString()); 
             }
         }
-        String contrasenia = new String(caract1);
-        String contra1 = new String(caract2);
         
-        contrasenia += contra1;
-        
-        return contrasenia.equals(contraUsuario);
+        return(contraUsuario.equals(sub1.toString() + sub2.toString()));
     }
 }
