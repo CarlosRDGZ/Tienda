@@ -119,7 +119,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
                     if(tarjeta.exists()) {
                         System.out.println("Tajeta Encontrada");
                         
-                        if(Controlador.tarjetaValida(tarjeta)) {
+                        if(Controlador1.tarjetaValida(tarjeta)) {
                             fileFound = true;
                             System.out.println("Tarjeta Valida");
                             break;
