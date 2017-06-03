@@ -1,6 +1,9 @@
 package tienda;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -105,23 +108,29 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
             System.out.println("Main thread");
             boolean fileFound = false;
             while(fileFound == false){
+                
+                Thread.sleep(2000);
 
                 File[] paths = File.listRoots();
 
                 for(File path:paths) {
-                    File tarjeta = new File(path.toString() + "/Tarjeta","Tarjeta.txt");
+                    File tarjeta = new File(path.toString() + "/Tarjeta","Tarjeta.dmc");
 
                     if(tarjeta.exists()) {
                         System.out.println("Tajeta Encontrada");
-                        fileFound = true;
-                        break;
+                        
+                        if(Controlador.tarjetaValida(tarjeta)) {
+                            fileFound = true;
+                            System.out.println("Tarjeta Valida");
+                            break;
+                        }
+                        else
+                            System.out.println("Tarjeta No Valida");
                     }
                     else {
                         System.out.println("Tarjeta No Encontrada");
                     }
                 }
-
-                Thread.sleep(2000);
             }
             
             lblProtectorPantalla.setVisible(true);
