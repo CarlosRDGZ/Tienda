@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 public class ArchivoProducto extends Archivo<Producto>
 {
-    private final int RECORD_SIZE = 36;
+    private final int RECORD_SIZE = 46;
     
     public ArchivoProducto(String nombreArchivo) {
         super(nombreArchivo);
@@ -49,7 +49,9 @@ public class ArchivoProducto extends Archivo<Producto>
             
             float costo = archivo.readFloat();
             
-            long productoID = archivo.readLong();
+            byte[] bId = new byte[8];
+            archivo.read(bId);
+            String productoID = new String(bId);
             
             int numDeRegistro = archivo.readInt();
             
@@ -73,7 +75,7 @@ public class ArchivoProducto extends Archivo<Producto>
             
             archivo.writeFloat(producto.getCosto());
             
-            archivo.writeFloat(producto.getCodigo());
+            archivo.writeBytes(producto.getCodigo());
             
             archivo.writeInt(producto.getNumDeRegistro());
             

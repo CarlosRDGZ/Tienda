@@ -5,12 +5,12 @@ public class Producto
     private String nombre;
     private float costo;
     private String marca;
-    private long productoID;
+    private String productoID;
     private int numDeRegistro;
     
     public Producto(){}
     
-    public Producto(String nombre, String marca, float costo, long productoID, int numDeRegistro){
+    public Producto(String nombre, String marca, float costo, String productoID, int numDeRegistro){
         this.nombre = nombre;
         this.costo = costo;
         this.marca = marca;
@@ -26,7 +26,7 @@ public class Producto
         return costo;
     }
 
-    public long getCodigo() {
+    public String getCodigo() {
         return productoID;
     }
 
@@ -42,7 +42,7 @@ public class Producto
         this.costo = costo;
     }
 
-    public void setCodigo(long productoID) {
+    public void setCodigo(String productoID) {
         this.productoID = productoID;
     }
 

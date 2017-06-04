@@ -1,22 +1,29 @@
 package tienda;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class ControladorAdministrador extends ControladorUsuario<Administrador>{
 
     @Override
-    public Administrador crear(Administrador e, Archivo Archivo, Identificadores id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void crear(Administrador admin, Archivo archivo, List<Administrador> list) {
+        admin.setNumDeRegistro(archivo.numeroDeRegistros());
+        
+        list.add(admin);
+        
+        archivo.grabarRegistro(admin, admin.getNumDeRegistro());
     }
 
     @Override
-    public Administrador editar(Administrador e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void eliminar(ArrayList<Administrador> array, Administrador e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void eliminar(Administrador admin, Archivo archivo, List<Administrador> list) {
+        Administrador ultimo = list.get(list.size() - 1);
+        
+        ultimo.setNumDeRegistro(admin.getNumDeRegistro());
+        
+        list.set(admin.getNumDeRegistro(), ultimo);
+        archivo.grabarRegistro(ultimo, admin.getNumDeRegistro());
+        
+        list.remove(list.size() - 1);
+        archivo.eliminar();
     }
     
 }

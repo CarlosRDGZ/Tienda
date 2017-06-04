@@ -14,28 +14,31 @@ public class Tarjeta {
     private String apPaterno;
     private String apMaterno;
     private String nombre;
-    private long idTarjeta;
+    private String idTarjeta;
     private int puntos;
+    private String contrasenia;
     private int numeroDeRegistro;
 
     Tarjeta ()
     {}
     
-    public Tarjeta(String apPaterno, String apMaterno, String nombre)
+    public Tarjeta(String apPaterno, String apMaterno, String nombre, String contrasenia)
     {
         this.apMaterno = apMaterno;
         this.apPaterno = apPaterno;
         this.nombre = nombre;
+        this.contrasenia = contrasenia;
     }
    
     public Tarjeta(String apPaterno, String apMaterno, String nombre,
-        long idTarjeta, int puntos, int numeroDeRegistro)
+        String idTarjeta, int puntos, String contrasenia, int numeroDeRegistro)
     {
         this.apPaterno = apPaterno;
         this.apMaterno = apMaterno;
         this.nombre = nombre;
         this.idTarjeta = idTarjeta;
         this.puntos = puntos;
+        this.contrasenia = contrasenia;
         this.numeroDeRegistro = numeroDeRegistro;
     }
     
@@ -81,14 +84,14 @@ public class Tarjeta {
     /**
      * @return the idTarjeta
      */
-    public Long getIdTarjeta() {
+    public String getIdTarjeta() {
         return idTarjeta;
     }
 
     /**
      * @param idTarjeta the idTarjeta to set
      */
-    public void setIdTarjeta(Long idTarjeta) {
+    public void setIdTarjeta(String idTarjeta) {
         this.idTarjeta = idTarjeta;
     }
 
@@ -118,5 +121,13 @@ public class Tarjeta {
      */
     public void setNumeroDeRegistro(int numeroDeRegistro) {
         this.numeroDeRegistro = numeroDeRegistro;
+    }
+
+    public String getContrasenia() {
+        return contrasenia;
+    }
+
+    public void setContrasenia(String contrasenia) {
+        this.contrasenia = contrasenia;
     }
 }

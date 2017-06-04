@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 public class ArchivoTarjeta extends Archivo<Tarjeta>
 {
-    private  final int RECORD_SIZE = 67;
+    private  final int RECORD_SIZE = 87;
     
     public ArchivoTarjeta(String nombreArchivo) {
         super(nombreArchivo);
@@ -53,13 +53,20 @@ public class ArchivoTarjeta extends Archivo<Tarjeta>
             archivo.read(nombre);
             String name = getStringArreglada(nombre);
             
-            long idTarjeta = archivo.readLong();
+            byte[] bIdTarjeta = new byte[8];
+            
+            archivo.read(bIdTarjeta);
+            String idTarjeta = new String(bIdTarjeta);
             
             int puntos = archivo.readInt();
             
+            byte[] bContra = new byte[16];
+            archivo.read(bContra);
+            String contra = getStringArreglada(bContra);
+            
             int numeroDeRegistro = archivo.readInt();
             
-            return new Tarjeta(apPaterno, apMaterno, name, idTarjeta, puntos, numeroDeRegistro);
+            return new Tarjeta(apPaterno, apMaterno, name, idTarjeta, puntos, contra, numeroDeRegistro);
             
         } catch (IOException ex) {
             Logger.getLogger(ArchivoTarjeta.class.getName()).log(Level.SEVERE, null, ex);
@@ -73,7 +80,9 @@ public class ArchivoTarjeta extends Archivo<Tarjeta>
         try
         {
             long posicion = RECORD_SIZE * numRegistro;
+            
             archivo.seek(posicion);
+            
             String apPaterno  = tarjeta.getApPaterno();
             apPaterno = setLongitudString(apPaterno, 15);
             archivo.writeBytes(apPaterno);
@@ -86,9 +95,14 @@ public class ArchivoTarjeta extends Archivo<Tarjeta>
             nombre = setLongitudString(nombre,25);
             archivo.writeBytes(nombre);
 
-            archivo.writeLong(tarjeta.getIdTarjeta());
+            String idTarjeta = tarjeta.getIdTarjeta();
+            archivo.writeBytes(idTarjeta);
 
             archivo.writeInt(tarjeta.getPuntos());
+            
+            String contra = tarjeta.getContrasenia();
+            contra = setLongitudString(contra,16);
+            archivo.writeBytes(contra);
 
             archivo.writeInt(tarjeta.getNumeroDeRegistro());
             

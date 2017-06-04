@@ -1,35 +1,44 @@
 package tienda;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class ControladorTarjeta extends ControladorUsuario<Tarjeta>{
-
+    
     @Override
-    public Tarjeta crear(Tarjeta tarjeta, Archivo archivo, Identificadores id) {
+    public void crear(Tarjeta tarjeta, Archivo archivo, List<Tarjeta> lista) {
         
         tarjeta.setPuntos(0);
         
         tarjeta.setNumeroDeRegistro(archivo.numeroDeRegistros());
         
-        long idTarjeta;
-        if(id.longitudIdentificadores() < 16)
-            idTarjeta = 0;
+        long nuevoId;
+        if(archivo.idRegistrado())
+            nuevoId = archivo.obtenerIdActual();
         else
-            idTarjeta = id.getIdTarjeta();
-        tarjeta.setIdTarjeta(idTarjeta);
-        id.updateIdTarjeta(idTarjeta + 1);
+            nuevoId = 0;
         
-        return tarjeta;
+        String idTarjeta = "" + nuevoId++;
+        archivo.grabarIdActual(nuevoId);
+        
+        while(idTarjeta.length() < 8)
+            idTarjeta = "0" + idTarjeta;
+        
+        tarjeta.setIdTarjeta(idTarjeta);
+        
+        lista.add(tarjeta);
+        archivo.grabarRegistro(tarjeta, tarjeta.getNumeroDeRegistro());
     }
 
     @Override
-    public Tarjeta editar(Tarjeta e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void eliminar(Tarjeta e, Archivo archivo, List<Tarjeta> lista) {
+        Tarjeta ultimo = lista.get(lista.size() - 1);
+        
+        ultimo.setNumeroDeRegistro(e.getNumeroDeRegistro());
+        
+        lista.set(e.getNumeroDeRegistro(), ultimo);
+        archivo.grabarRegistro(ultimo, e.getNumeroDeRegistro());
+        
+        lista.remove(lista.size() - 1);
+        archivo.eliminar();
     }
-
-    @Override
-    public void eliminar(ArrayList<Tarjeta> array, Tarjeta e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }

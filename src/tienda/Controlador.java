@@ -1,11 +1,9 @@
 package tienda;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface Controlador<E> {
-   public E crear(E e, Archivo archivo, Identificadores id);
+   public void crear(E e, Archivo archivo, List<E> list);
    
-   public E editar(E e);
-   
-   public void eliminar(ArrayList<E> array, E e);
+   public void eliminar(E e, Archivo archivo, List<E> list);
 }

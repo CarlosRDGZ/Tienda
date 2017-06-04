@@ -6,7 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ArchivoAdministrador extends Archivo<Administrador> {
-    private final int RECORD_SIZE = 24;
+    private final int RECORD_SIZE = 28;
     
     public ArchivoAdministrador(String nombreArchivo) {
         super(nombreArchivo);
@@ -46,7 +46,9 @@ public class ArchivoAdministrador extends Archivo<Administrador> {
             archivo.read(bContrasenia);
             String contrasenia = getStringArreglada(bContrasenia);
             
-            return new Administrador(usuario, contrasenia);
+            int numDeRegistro = archivo.readInt();
+            
+            return new Administrador(usuario, contrasenia, numDeRegistro);
         } catch (IOException ex) {
             Logger.getLogger(ArchivoProducto.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -62,6 +64,8 @@ public class ArchivoAdministrador extends Archivo<Administrador> {
             archivo.writeBytes(setLongitudString(administrador.getUsuario(), 8));
             
             archivo.writeBytes(setLongitudString(administrador.getContrasenia(), 16));
+            
+            archivo.writeInt(administrador.getNumDeRegistro());
             
         } catch (IOException ex) {
             Logger.getLogger(ArchivoProducto.class.getName()).log(Level.SEVERE, null, ex);

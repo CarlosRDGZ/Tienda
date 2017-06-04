@@ -207,6 +207,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
        tienda.setSize(tienda.getPreferredSize());
        tienda.setVisible(true);
        tienda.run();
+       pruebaTarjetaAgregarSinGUI();
     }
     
     public void run() {
@@ -271,31 +272,53 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     private static void pruebaTarjetaAgregarSinGUI() {
                
        
-        ArrayList<Tarjeta> tarjetas_array = new ArrayList();
         ArchivoTarjeta arch_tarjetas = new ArchivoTarjeta("tarjetas");
+        ArrayList<Tarjeta> tarjetas_array = arch_tarjetas.leerTodos();
         ControladorTarjeta ctrl_tarjetas = new ControladorTarjeta();
-        Identificadores id = new Identificadores();
         
-       Tarjeta t = new Tarjeta("Michel", "Garcia", "Maricruz");
-       t = ctrl_tarjetas.crear(t, arch_tarjetas, id);
-       tarjetas_array.add(t);
-       arch_tarjetas.grabarRegistro(t, t.getNumeroDeRegistro());
-       
-       Tarjeta t2 = arch_tarjetas.leerRegistro(t.getNumeroDeRegistro());
+        String contra = ControladorTarjeta.crearContrasenia("mari100317");
+                
+        Tarjeta t = new Tarjeta("Michel", "Garcia", "Maricruz", contra);
+        ctrl_tarjetas.crear(t, arch_tarjetas,tarjetas_array);
+
+        Tarjeta t2 = arch_tarjetas.leerRegistro(t.getNumeroDeRegistro());
         System.out.println(t2.getApPaterno());
         System.out.println(t2.getApMaterno());
         System.out.println(t2.getNombre());
         System.out.println(t2.getIdTarjeta());
         System.out.println(t2.getPuntos());
         System.out.println(t2.getNumeroDeRegistro());
+        System.out.println(t2.getContrasenia());
         
-       Tarjeta t3 = tarjetas_array.get(0);
-       System.out.println(t3.getApPaterno());
+        if(ControladorTarjeta.verificarContrasenia(t2.getContrasenia(), "mari100417"))
+            System.out.println("Son iguales");
+        else
+            System.out.println("Son diferentes");
+                
+
+        Tarjeta t3 = tarjetas_array.get(t.getNumeroDeRegistro());
+        System.out.println(t3.getApPaterno());
         System.out.println(t3.getApMaterno());
         System.out.println(t3.getNombre());
         System.out.println(t3.getIdTarjeta());
         System.out.println(t3.getPuntos());
         System.out.println(t3.getNumeroDeRegistro());
+        System.out.println(t3.getContrasenia());
+        if(ControladorTarjeta.verificarContrasenia(t3.getContrasenia(), "mari100317"))
+            System.out.println("Son iguales");
+        
+        ctrl_tarjetas.eliminar(tarjetas_array.get(5), arch_tarjetas, tarjetas_array);
+        
+        for(Tarjeta t5:tarjetas_array) {
+            System.out.println(t5.getIdTarjeta());
+            System.out.println(t5.getNumeroDeRegistro());
+        }
+        
+        ArrayList<Tarjeta> array = arch_tarjetas.leerTodos();
+        for(Tarjeta t6:array) {
+            System.out.println(t6.getIdTarjeta());
+            System.out.println(t6.getNumeroDeRegistro());
+        }
     }
 
 }
