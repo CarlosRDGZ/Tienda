@@ -3,7 +3,7 @@ package tienda;
 import java.util.ArrayList;
 
 public interface Controlador<E> {
-   public E crear(E e);
+   public E crear(E e, Archivo archivo, Identificadores id);
    
    public E editar(E e);
    

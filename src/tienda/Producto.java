@@ -4,14 +4,16 @@ public class Producto
 {
     private String nombre;
     private float costo;
+    private String marca;
     private long productoID;
     private int numDeRegistro;
     
     public Producto(){}
     
-    public Producto(String nombre, float costo, long productoID, int numDeRegistro){
+    public Producto(String nombre, String marca, float costo, long productoID, int numDeRegistro){
         this.nombre = nombre;
         this.costo = costo;
+        this.marca = marca;
         this.productoID = productoID;
         this.numDeRegistro = numDeRegistro;        
     }
@@ -47,6 +49,12 @@ public class Producto
     public void setNumDeRegistro(int numDeRegistro) {
         this.numDeRegistro = numDeRegistro;
     }
-    
-    
+
+    public String getMarca() {
+        return marca;
+    }
+
+    public void setMarca(String marca) {
+        this.marca = marca;
+    }
 }

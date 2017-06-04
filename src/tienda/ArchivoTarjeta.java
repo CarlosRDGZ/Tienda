@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ArchivoTarjeta extends ArchivoAbstracto
+public class ArchivoTarjeta extends Archivo<Tarjeta>
 {
     private  final int RECORD_SIZE = 67;
     
@@ -33,6 +33,7 @@ public class ArchivoTarjeta extends ArchivoAbstracto
         return -1;
     }
     
+    @Override
     public Tarjeta leerRegistro(int numRegistro)
     {
         try
@@ -66,13 +67,14 @@ public class ArchivoTarjeta extends ArchivoAbstracto
         return null;
     }
     
-    public void agregarRegistro(Tarjeta tarjeta, int numRegistro)
+    @Override
+    public void grabarRegistro(Tarjeta tarjeta, int numRegistro)
     {
         try
         {
             long posicion = RECORD_SIZE * numRegistro;
             archivo.seek(posicion);
-            String apPaterno  = tarjeta.getApMaterno();
+            String apPaterno  = tarjeta.getApPaterno();
             apPaterno = setLongitudString(apPaterno, 15);
             archivo.writeBytes(apPaterno);
 
@@ -95,6 +97,7 @@ public class ArchivoTarjeta extends ArchivoAbstracto
         }
     }
     
+    @Override
     public ArrayList<Tarjeta> leerTodos()
     {
         ArrayList<Tarjeta> todosRegistros = new ArrayList();

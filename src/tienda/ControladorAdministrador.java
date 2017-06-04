@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class ControladorAdministrador extends ControladorUsuario<Administrador>{
 
     @Override
-    public Administrador crear(Administrador e) {
+    public Administrador crear(Administrador e, Archivo Archivo, Identificadores id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

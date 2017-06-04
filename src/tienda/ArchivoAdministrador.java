@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ArchivoAdministrador extends ArchivoAbstracto {
+public class ArchivoAdministrador extends Archivo<Administrador> {
     private final int RECORD_SIZE = 24;
     
     public ArchivoAdministrador(String nombreArchivo) {
@@ -31,6 +31,7 @@ public class ArchivoAdministrador extends ArchivoAbstracto {
         return -1;
     }
     
+    @Override
     public Administrador leerRegistro(int numRegistro)
     {
         try
@@ -52,6 +53,7 @@ public class ArchivoAdministrador extends ArchivoAbstracto {
         return null;
     }
     
+    @Override
     public void grabarRegistro(Administrador administrador, int numRegistro) {
          try
         {
@@ -66,6 +68,7 @@ public class ArchivoAdministrador extends ArchivoAbstracto {
         }
     }
     
+    @Override
     public ArrayList<Administrador> leerTodos() {
         ArrayList<Administrador> todos = new ArrayList();
         for(int i = 0; i < numeroDeRegistros(); i++)

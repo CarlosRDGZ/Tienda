@@ -18,17 +18,21 @@ public class Tarjeta {
     private int puntos;
     private int numeroDeRegistro;
 
-    /**
-     * @return the apPaterno
-     */
     Tarjeta ()
     {}
+    
+    public Tarjeta(String apPaterno, String apMaterno, String nombre)
+    {
+        this.apMaterno = apMaterno;
+        this.apPaterno = apPaterno;
+        this.nombre = nombre;
+    }
    
     public Tarjeta(String apPaterno, String apMaterno, String nombre,
         long idTarjeta, int puntos, int numeroDeRegistro)
     {
-        this.apMaterno = apMaterno;
         this.apPaterno = apPaterno;
+        this.apMaterno = apMaterno;
         this.nombre = nombre;
         this.idTarjeta = idTarjeta;
         this.puntos = puntos;
