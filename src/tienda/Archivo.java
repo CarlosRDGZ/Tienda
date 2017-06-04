@@ -2,23 +2,30 @@ package tienda;
 
 import java.io.FileNotFoundException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public abstract class ArchivoAbstracto
+public abstract class Archivo<E>
 {
     protected RandomAccessFile archivo;
 
-    public ArchivoAbstracto(String nombreArchivo)
+    public Archivo(String nombreArchivo)
     {
         try 
-        {archivo = new RandomAccessFile (nombreArchivo + ".dat", "rw");} 
+        {archivo = new RandomAccessFile (nombreArchivo + ".dmc", "rw");} 
         catch (FileNotFoundException ex) 
         {
-            Logger.getLogger(ArchivoAbstracto.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Archivo.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }
+    
+    abstract void grabarRegistro(E e, int numDeRegistro);
+    
+    abstract E leerRegistro(int numDeRegistro);
+    
+    abstract ArrayList<E> leerTodos();
 
     abstract void eliminar();
 

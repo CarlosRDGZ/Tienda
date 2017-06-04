@@ -1,14 +1,12 @@
 package tienda;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Tienda extends javax.swing.JFrame implements Runnable{
-    
+
     public Tienda() {
         initComponents();
         
@@ -269,4 +267,35 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     private javax.swing.JPasswordField pswContra;
     private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
+
+    private static void pruebaTarjetaAgregarSinGUI() {
+               
+       
+        ArrayList<Tarjeta> tarjetas_array = new ArrayList();
+        ArchivoTarjeta arch_tarjetas = new ArchivoTarjeta("tarjetas");
+        ControladorTarjeta ctrl_tarjetas = new ControladorTarjeta();
+        Identificadores id = new Identificadores();
+        
+       Tarjeta t = new Tarjeta("Michel", "Garcia", "Maricruz");
+       t = ctrl_tarjetas.crear(t, arch_tarjetas, id);
+       tarjetas_array.add(t);
+       arch_tarjetas.grabarRegistro(t, t.getNumeroDeRegistro());
+       
+       Tarjeta t2 = arch_tarjetas.leerRegistro(t.getNumeroDeRegistro());
+        System.out.println(t2.getApPaterno());
+        System.out.println(t2.getApMaterno());
+        System.out.println(t2.getNombre());
+        System.out.println(t2.getIdTarjeta());
+        System.out.println(t2.getPuntos());
+        System.out.println(t2.getNumeroDeRegistro());
+        
+       Tarjeta t3 = tarjetas_array.get(0);
+       System.out.println(t3.getApPaterno());
+        System.out.println(t3.getApMaterno());
+        System.out.println(t3.getNombre());
+        System.out.println(t3.getIdTarjeta());
+        System.out.println(t3.getPuntos());
+        System.out.println(t3.getNumeroDeRegistro());
+    }
+
 }

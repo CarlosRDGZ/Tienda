@@ -5,14 +5,12 @@
  */
 package tienda;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CompraFile extends ArchivoAbstracto {
+public class CompraFile extends Archivo<Compra> {
     private final int RECORD_SIZE = 24;
 
     public CompraFile(String nombreArchivo) {
@@ -40,6 +38,7 @@ public class CompraFile extends ArchivoAbstracto {
         return -1;
     }
     
+    @Override
     public Compra leerRegistro(int numRegistro)
     {
         try
@@ -59,6 +58,33 @@ public class CompraFile extends ArchivoAbstracto {
             Logger.getLogger(CompraFile.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    @Override
+    void grabarRegistro(Compra compra, int numDeRegistro) {
+        try {
+            archivo.seek(numDeRegistro);
+            
+            archivo.writeLong(compra.getIdProducto());
+            
+            archivo.writeLong(compra.getIdTarjeta());
+            
+            archivo.writeInt(compra.getTipo());
+            
+            archivo.writeInt(compra.getNumRegistro());
+            
+        } catch (IOException ex) {
+            Logger.getLogger(CompraFile.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public ArrayList<Compra> leerTodos() {
+        ArrayList<Compra> todos = new ArrayList();
+        for(int i = 0; i < numeroDeRegistros(); i++) {
+            todos.add(leerRegistro(i));
+        }
+        return todos;
     }
     
 }

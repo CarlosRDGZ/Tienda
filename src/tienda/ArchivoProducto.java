@@ -1,4 +1,3 @@
-
 package tienda;
 
 import java.io.IOException;
@@ -6,7 +5,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ArchivoProducto extends ArchivoAbstracto
+public class ArchivoProducto extends Archivo<Producto>
 {
     private final int RECORD_SIZE = 36;
     
@@ -33,6 +32,7 @@ public class ArchivoProducto extends ArchivoAbstracto
         return -1;
     }
     
+    @Override
     public Producto leerRegistro(int numRegistro)
     {
         try
@@ -43,26 +43,33 @@ public class ArchivoProducto extends ArchivoAbstracto
             archivo.read(bNombre);
             String nombre = getStringArreglada(bNombre);
             
+            byte[] bMarca = new byte[10];
+            archivo.read(bMarca);
+            String marca = getStringArreglada(bMarca);
+            
             float costo = archivo.readFloat();
             
             long productoID = archivo.readLong();
             
             int numDeRegistro = archivo.readInt();
             
-            return new Producto(nombre, costo, productoID, numDeRegistro);
+            return new Producto(nombre, marca, costo, productoID, numDeRegistro);
         } catch (IOException ex) {
             Logger.getLogger(ArchivoProducto.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
     
-    public void agregarRegistro(Producto producto, int numRegistro)
+    @Override
+    public void grabarRegistro(Producto producto, int numRegistro)
     {
         try
         {
             archivo.seek(numRegistro*RECORD_SIZE);
             
             archivo.writeBytes(setLongitudString(producto.getNombre(), 20));
+            
+            archivo.writeBytes(setLongitudString(producto.getNombre(), 10));
             
             archivo.writeFloat(producto.getCosto());
             
@@ -75,6 +82,7 @@ public class ArchivoProducto extends ArchivoAbstracto
         }
     }
     
+    @Override
     public ArrayList<Producto> leerTodos()
     {
         ArrayList<Producto > todos = new ArrayList();
