@@ -2,7 +2,7 @@ package tienda;
 
 abstract class ControladorUsuario<E> implements Controlador<E> {
     
-    protected String crearContrasenia(String contrasenia) {
+    public static String crearContrasenia(String contrasenia) {
         String sub1 = contrasenia.substring(0, contrasenia.length()/2);
         String sub2 = contrasenia.substring((contrasenia.length()/2));
         System.out.println(sub1);
@@ -30,12 +30,10 @@ abstract class ControladorUsuario<E> implements Controlador<E> {
             if(i % 2 == 0) {
                 int crct = (int) contraSistema.charAt(i) - 5;
                 sub2.append((char)crct);
-                System.out.println(sub2.toString());
             }
             else {
                int crct = (int) contraSistema.charAt(i) - 3;
-                sub1.append((char)crct);
-                System.out.println(sub1.toString()); 
+                sub1.append((char)crct); 
             }
         }
         
