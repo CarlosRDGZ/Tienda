@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 public class Tienda extends javax.swing.JFrame implements Runnable{
 
@@ -12,6 +13,11 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         
         frmLogin.setSize(frmLogin.getPreferredSize());
         frmLogin.setResizable(false);
+        
+        jScrollPane1.setVisible(false);
+        bntComprar.setVisible(false);
+        bntDetalles.setVisible(false);
+        tblProductos.setVisible(false);
     }
 
     /**
@@ -25,21 +31,22 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
 
         frmNvProducto = new javax.swing.JFrame();
         frmNvTarjeta = new javax.swing.JFrame();
+        jTextField3 = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
         frmLogin = new javax.swing.JFrame();
         txtUsuario = new javax.swing.JTextField();
         pswContra = new javax.swing.JPasswordField();
         btnAceder = new javax.swing.JButton();
         bntAdministrador = new javax.swing.JToggleButton();
         lblPantallaLogin = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
         lblPantallaInicio = new javax.swing.JLabel();
         bntComprar = new javax.swing.JButton();
         bntDetalles = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblProductos = new javax.swing.JTable();
         lblPuntos = new javax.swing.JLabel();
         lblNombre = new javax.swing.JLabel();
         lblPantalla = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
 
         javax.swing.GroupLayout frmNvProductoLayout = new javax.swing.GroupLayout(frmNvProducto.getContentPane());
         frmNvProducto.getContentPane().setLayout(frmNvProductoLayout);
@@ -52,22 +59,34 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
             .addGap(0, 300, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout frmNvTarjetaLayout = new javax.swing.GroupLayout(frmNvTarjeta.getContentPane());
-        frmNvTarjeta.getContentPane().setLayout(frmNvTarjetaLayout);
-        frmNvTarjetaLayout.setHorizontalGroup(
-            frmNvTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        frmNvTarjetaLayout.setVerticalGroup(
-            frmNvTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        frmNvTarjeta.setTitle("Nueva tarjeta");
+        frmNvTarjeta.setMinimumSize(new java.awt.Dimension(610, 500));
+        frmNvTarjeta.setPreferredSize(new java.awt.Dimension(610, 500));
+        frmNvTarjeta.getContentPane().setLayout(null);
+
+        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField3ActionPerformed(evt);
+            }
+        });
+        frmNvTarjeta.getContentPane().add(jTextField3);
+        jTextField3.setBounds(220, 130, 170, 20);
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tienda/Nuevatarjeta.png"))); // NOI18N
+        frmNvTarjeta.getContentPane().add(jLabel1);
+        jLabel1.setBounds(0, -10, 620, 510);
 
         frmLogin.setTitle("Iniciar Sesion");
-        frmLogin.setMinimumSize(new java.awt.Dimension(300, 200));
+        frmLogin.setMinimumSize(new java.awt.Dimension(300, 215));
+        frmLogin.setPreferredSize(new java.awt.Dimension(300, 215));
         frmLogin.setType(java.awt.Window.Type.UTILITY);
         frmLogin.getContentPane().setLayout(null);
 
+        txtUsuario.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtUsuarioFocusLost(evt);
+            }
+        });
         txtUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtUsuarioActionPerformed(evt);
@@ -75,10 +94,26 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         });
         frmLogin.getContentPane().add(txtUsuario);
         txtUsuario.setBounds(110, 80, 147, 20);
+
+        pswContra.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                pswContraFocusLost(evt);
+            }
+        });
+        pswContra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pswContraActionPerformed(evt);
+            }
+        });
         frmLogin.getContentPane().add(pswContra);
         pswContra.setBounds(110, 120, 147, 20);
 
         btnAceder.setText("Entrar");
+        btnAceder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAcederActionPerformed(evt);
+            }
+        });
         frmLogin.getContentPane().add(btnAceder);
         btnAceder.setBounds(130, 160, 73, 23);
 
@@ -95,8 +130,6 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         lblPantallaLogin.setText("jLabel1");
         frmLogin.getContentPane().add(lblPantallaLogin);
         lblPantallaLogin.setBounds(-10, 0, 320, 200);
-
-        jLabel1.setText("jLabel1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(660, 540));
@@ -123,20 +156,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         getContentPane().add(bntDetalles);
         bntDetalles.setBounds(450, 490, 71, 23);
 
-        lblPuntos.setText("Puntos:");
-        getContentPane().add(lblPuntos);
-        lblPuntos.setBounds(540, 110, 80, 14);
-
-        lblNombre.setText("Nombre:");
-        getContentPane().add(lblNombre);
-        lblNombre.setBounds(430, 90, 50, 14);
-
-        lblPantalla.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tienda/PantallaUniversal.png"))); // NOI18N
-        lblPantalla.setName(""); // NOI18N
-        getContentPane().add(lblPantalla);
-        lblPantalla.setBounds(0, 0, 660, 520);
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null}
             },
@@ -159,10 +179,23 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblProductos);
 
         getContentPane().add(jScrollPane1);
         jScrollPane1.setBounds(40, 130, 580, 340);
+
+        lblPuntos.setText("Puntos:");
+        getContentPane().add(lblPuntos);
+        lblPuntos.setBounds(540, 110, 80, 14);
+
+        lblNombre.setText("Nombre:");
+        getContentPane().add(lblNombre);
+        lblNombre.setBounds(430, 90, 50, 14);
+
+        lblPantalla.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tienda/PantallaUniversal.png"))); // NOI18N
+        lblPantalla.setName(""); // NOI18N
+        getContentPane().add(lblPantalla);
+        lblPantalla.setBounds(0, 0, 660, 520);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -178,6 +211,35 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     private void txtUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsuarioActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtUsuarioActionPerformed
+
+    private void txtUsuarioFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtUsuarioFocusLost
+        if(txtUsuario.getText().length() > 8) {
+            JOptionPane.showMessageDialog(frmLogin, "Usuario no debe ser mayor a 8 caracteres", "Error", JOptionPane.ERROR_MESSAGE);
+            txtUsuario.setText("");
+            txtUsuario.requestFocus();
+        }
+    }//GEN-LAST:event_txtUsuarioFocusLost
+
+    private void pswContraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pswContraActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_pswContraActionPerformed
+
+    private void pswContraFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_pswContraFocusLost
+        if(pswContra.getText().length()< 8 || pswContra.getText().length() > 16) {
+            JOptionPane.showMessageDialog(frmLogin, "La contraseña debe medir entre 8 y 16 caracteres", "Error", JOptionPane.ERROR_MESSAGE);
+            pswContra.setText(""); 
+            pswContra.requestFocus();
+        }
+    }//GEN-LAST:event_pswContraFocusLost
+
+    private void btnAcederActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcederActionPerformed
+        /*valiadr que los campos no esten vacios, validar la longitu de los campos
+        si todo es verdad ;vaciar las cajes de texto , oc*/
+    }//GEN-LAST:event_btnAcederActionPerformed
+
+    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField3ActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -259,13 +321,14 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     private javax.swing.JFrame frmNvTarjeta;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTextField jTextField3;
     private javax.swing.JLabel lblNombre;
     private javax.swing.JLabel lblPantalla;
     private javax.swing.JLabel lblPantallaInicio;
     private javax.swing.JLabel lblPantallaLogin;
     private javax.swing.JLabel lblPuntos;
     private javax.swing.JPasswordField pswContra;
+    private javax.swing.JTable tblProductos;
     private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
 
