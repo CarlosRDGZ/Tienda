@@ -45,15 +45,27 @@ public class CompraFile extends Archivo<Compra> {
         {
             archivo.seek(numRegistro*RECORD_SIZE);
             
-            long idProducto = archivo.readLong();
+            byte[] bIDProd = new byte[8];
+            archivo.read(bIDProd);
+            String idProd = new String(bIDProd);
             
-            long idTarjeta = archivo.readLong();
+            byte[] bIDTarjeta = new byte[8];
+            archivo.read(bIDTarjeta);
+            String idTarjeta = new String(bIDTarjeta);
             
             int tipo = archivo.readInt();
             
-            int numDeRegistro = archivo.readInt();
+            byte[] bFecha = new byte[10];
+            archivo.read(bFecha);
+            String fecha = new String(bFecha);
             
-            return new Compra(idProducto, idTarjeta, tipo,numDeRegistro);
+            byte[] bHora = new byte[11];
+            archivo.read(bHora);
+            String hora = new String(bHora);
+            
+            int numDeReg = archivo.readInt();
+            
+            return new Compra(idProd, idTarjeta, tipo, fecha, hora, numDeReg);
         } catch (IOException ex) {
             Logger.getLogger(CompraFile.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -65,11 +77,13 @@ public class CompraFile extends Archivo<Compra> {
         try {
             archivo.seek(numDeRegistro);
             
-            archivo.writeLong(compra.getIdProducto());
+            archivo.writeBytes(compra.getIdProducto());
             
-            archivo.writeLong(compra.getIdTarjeta());
+            archivo.writeBytes(compra.getIdTarjeta());
             
-            archivo.writeInt(compra.getTipo());
+            archivo.writeBytes(compra.getFecha());
+            
+            archivo.writeBytes(compra.getHora());
             
             archivo.writeInt(compra.getNumRegistro());
             
