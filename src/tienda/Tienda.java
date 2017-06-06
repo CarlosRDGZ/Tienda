@@ -8,9 +8,29 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class Tienda extends javax.swing.JFrame implements Runnable{
+    
+    private boolean login;
+    
+    private ArchivoTarjeta tArch;
+    private ArrayList<Tarjeta> tArray;
+    private ControladorTarjeta tCtrl;
+    
+    private ArchivoAdministrador adminArch;
+    private ArrayList<Administrador> adminArray;
+    private ControladorAdministrador adminCtrl;
 
     public Tienda() {
         initComponents();
+        
+        login = false;
+        
+        tArch = new ArchivoTarjeta("archtj");
+        tArray = tArch.leerTodos();
+        tCtrl = new ControladorTarjeta();
+        
+        adminArch = new ArchivoAdministrador("archamin");
+        adminArray = adminArch.leerTodos();
+        adminCtrl = new ControladorAdministrador();
         
         frmLogin.setSize(frmLogin.getPreferredSize());
         frmLogin.setResizable(false);
@@ -38,7 +58,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         txtUsuario = new javax.swing.JTextField();
         pswContra = new javax.swing.JPasswordField();
         btnAceder = new javax.swing.JButton();
-        bntAdministrador = new javax.swing.JToggleButton();
+        btnAdministrador = new javax.swing.JToggleButton();
         lblPantallaLogin = new javax.swing.JLabel();
         lblPantallaInicio = new javax.swing.JLabel();
         bntComprar = new javax.swing.JButton();
@@ -116,14 +136,14 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         frmLogin.getContentPane().add(btnAceder);
         btnAceder.setBounds(130, 160, 73, 23);
 
-        bntAdministrador.setText("Administrador ");
-        bntAdministrador.addActionListener(new java.awt.event.ActionListener() {
+        btnAdministrador.setText("Administrador ");
+        btnAdministrador.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bntAdministradorActionPerformed(evt);
+                btnAdministradorActionPerformed(evt);
             }
         });
-        frmLogin.getContentPane().add(bntAdministrador);
-        bntAdministrador.setBounds(178, 11, 101, 23);
+        frmLogin.getContentPane().add(btnAdministrador);
+        btnAdministrador.setBounds(178, 11, 101, 23);
 
         lblPantallaLogin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tienda/PantallaLogin.png"))); // NOI18N
         lblPantallaLogin.setText("jLabel1");
@@ -132,9 +152,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(660, 540));
-        setPreferredSize(new java.awt.Dimension(660, 540));
         setResizable(false);
-        setSize(new java.awt.Dimension(570, 376));
         getContentPane().setLayout(null);
 
         lblPantallaInicio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tienda/ScreenSaver.png"))); // NOI18N
@@ -199,9 +217,9 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void bntAdministradorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntAdministradorActionPerformed
+    private void btnAdministradorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdministradorActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_bntAdministradorActionPerformed
+    }//GEN-LAST:event_btnAdministradorActionPerformed
 
     private void bntComprarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntComprarActionPerformed
         // TODO add your handling code here:
@@ -232,8 +250,43 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     }//GEN-LAST:event_pswContraFocusLost
 
     private void btnAcederActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcederActionPerformed
-        /*valiadr que los campos no esten vacios, validar la longitu de los campos
-        si todo es verdad ;vaciar las cajes de texto , oc*/
+        if(!txtUsuario.getText().isEmpty() && ! pswContra.getText().isEmpty()) {
+            
+            String contrasenia = "";
+            if(!btnAdministrador.isSelected()) {
+                
+                for(Tarjeta tarjeta:tArray) {
+                    
+                    if(tarjeta.getIdTarjeta().equals(txtUsuario.getText())) {
+                        contrasenia = tarjeta.getContrasenia();
+                        break;
+                    }
+                }
+            }
+            else {
+                for(Administrador admin:adminArray) {
+                    
+                    if(admin.getUsuario().equals(txtUsuario.getText())) {
+                        contrasenia = admin.getContrasenia();
+                        break;
+                    }
+                }      
+            }
+            
+            if(!contrasenia.isEmpty()) {
+                if(ControladorUsuario.verificarContrasenia(contrasenia, pswContra.getText())) {
+                    txtUsuario.setText("");
+                    pswContra.setText("");
+                    login = true;
+                }
+                else
+                    JOptionPane.showMessageDialog(frmLogin, "Contraseña incorrecta", "Error", JOptionPane.ERROR);
+            }
+            else
+                JOptionPane.showMessageDialog(frmLogin, "Usuario no encontrado", "Error", JOptionPane.ERROR);
+            }
+        else
+            JOptionPane.showMessageDialog(frmLogin, "Debe llenar todos los campos", "Error", JOptionPane.ERROR);
     }//GEN-LAST:event_btnAcederActionPerformed
 
     private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
@@ -271,6 +324,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
        pruebaTarjetaAgregarSinGUI();
     }
     
+    @Override
     public void run() {
         try
         {
@@ -304,6 +358,10 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
             
             frmLogin.setVisible(true);
             
+            while(login == false)
+                frmLogin.setAlwaysOnTop(true);
+            
+            
 
         } catch (InterruptedException ex) {
             Logger.getLogger(Tienda.class.getName()).log(Level.SEVERE, null, ex);
@@ -311,10 +369,10 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JToggleButton bntAdministrador;
     private javax.swing.JButton bntComprar;
     private javax.swing.JButton bntDetalles;
     private javax.swing.JButton btnAceder;
+    private javax.swing.JToggleButton btnAdministrador;
     private javax.swing.JFrame frmLogin;
     private javax.swing.JFrame frmNvProducto;
     private javax.swing.JFrame frmNvTarjeta;
@@ -366,7 +424,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         System.out.println(t3.getPuntos());
         System.out.println(t3.getNumeroDeRegistro());
         System.out.println(t3.getContrasenia());
-        if(ControladorTarjeta.verificarContrasenia(t3.getContrasenia(), "mari100317"))
+        if(ctrl_tarjetas.verificarContrasenia(t3.getContrasenia(), "mari100317"))
             System.out.println("Son iguales");
         
         ctrl_tarjetas.eliminar(tarjetas_array.get(5), arch_tarjetas, tarjetas_array);
