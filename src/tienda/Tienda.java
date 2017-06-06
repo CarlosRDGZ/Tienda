@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class Tienda extends javax.swing.JFrame implements Runnable{
@@ -61,7 +62,6 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
 
         frmNvTarjeta.setTitle("Nueva tarjeta");
         frmNvTarjeta.setMinimumSize(new java.awt.Dimension(610, 500));
-        frmNvTarjeta.setPreferredSize(new java.awt.Dimension(610, 500));
         frmNvTarjeta.getContentPane().setLayout(null);
 
         jTextField3.addActionListener(new java.awt.event.ActionListener() {
@@ -78,7 +78,6 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
 
         frmLogin.setTitle("Iniciar Sesion");
         frmLogin.setMinimumSize(new java.awt.Dimension(300, 215));
-        frmLogin.setPreferredSize(new java.awt.Dimension(300, 215));
         frmLogin.setType(java.awt.Window.Type.UTILITY);
         frmLogin.getContentPane().setLayout(null);
 
@@ -240,7 +239,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField3ActionPerformed
-
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
