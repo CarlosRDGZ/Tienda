@@ -76,7 +76,7 @@ public class ArchivoAdministrador extends Archivo<Administrador> {
     public ArrayList<Administrador> leerTodos() {
         ArrayList<Administrador> todos = new ArrayList();
         for(int i = 0; i < numeroDeRegistros(); i++)
-            todos.add(null);
+            todos.add(leerRegistro(i));
         return todos;
     }
 }
