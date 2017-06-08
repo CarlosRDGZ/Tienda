@@ -8,8 +8,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class Tienda extends javax.swing.JFrame implements Runnable{
-    
-    private boolean login;
+
     private boolean admin;
     
     private ArchivoTarjeta tArch;
@@ -23,12 +22,13 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     private ArchivoProducto prodArch;
     private ArrayList<Producto> prodArray;
     private ControladorProductos prodCtrl;
+    
+    private final DefaultTableModel model;
 
     public Tienda() {
         initComponents();
         
-        login = false;
-        admin =false;
+        admin = false;
         
         tArch = new ArchivoTarjeta("tarjetas");
         tArray = tArch.leerTodos();
@@ -45,9 +45,20 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         frmLogin.setSize(frmLogin.getPreferredSize());
         frmLogin.setResizable(false);
         
+        frmNvProducto.setSize(frmNvProducto.getPreferredSize());
+        frmNvProducto.setResizable(false);
+        
         setPantallaPrincipalVisible(false);
         
         btnAgregarProducto.setVisible(false);
+        
+        
+        model = (DefaultTableModel) tblProductos.getModel();
+        DefaultTableModel tabla = model;
+        for(Producto producto:prodArray)
+            addToTable(producto, tabla);
+        tblProductos.setModel(tabla);
+        
     }
 
     /**
@@ -60,6 +71,10 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     private void initComponents() {
 
         frmNvProducto = new javax.swing.JFrame();
+        txtNombreNvProd = new javax.swing.JTextField();
+        txtMarcaNvProd = new javax.swing.JTextField();
+        txtCostoNvProd = new javax.swing.JTextField();
+        btnGuardar = new javax.swing.JButton();
         frmNvTarjeta = new javax.swing.JFrame();
         jTextField3 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
@@ -79,15 +94,53 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         lblPantalla = new javax.swing.JLabel();
         lblPantallaInicio = new javax.swing.JLabel();
 
+        frmNvProducto.setMinimumSize(new java.awt.Dimension(364, 246));
+        frmNvProducto.setPreferredSize(new java.awt.Dimension(364, 246));
+
+        txtNombreNvProd.setText("nombre");
+        txtNombreNvProd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNombreNvProdActionPerformed(evt);
+            }
+        });
+
+        txtMarcaNvProd.setText("marca");
+
+        txtCostoNvProd.setText("costo");
+
+        btnGuardar.setText("Guardar");
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout frmNvProductoLayout = new javax.swing.GroupLayout(frmNvProducto.getContentPane());
         frmNvProducto.getContentPane().setLayout(frmNvProductoLayout);
         frmNvProductoLayout.setHorizontalGroup(
             frmNvProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(frmNvProductoLayout.createSequentialGroup()
+                .addGap(119, 119, 119)
+                .addGroup(frmNvProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnGuardar)
+                    .addGroup(frmNvProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(txtNombreNvProd, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
+                        .addComponent(txtMarcaNvProd)
+                        .addComponent(txtCostoNvProd)))
+                .addContainerGap(75, Short.MAX_VALUE))
         );
         frmNvProductoLayout.setVerticalGroup(
             frmNvProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(frmNvProductoLayout.createSequentialGroup()
+                .addGap(35, 35, 35)
+                .addComponent(txtNombreNvProd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(txtMarcaNvProd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(29, 29, 29)
+                .addComponent(txtCostoNvProd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26)
+                .addComponent(btnGuardar)
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         frmNvTarjeta.setTitle("Nueva tarjeta");
@@ -108,6 +161,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
 
         frmLogin.setTitle("Iniciar Sesion");
         frmLogin.setMinimumSize(new java.awt.Dimension(313, 220));
+        frmLogin.setPreferredSize(new java.awt.Dimension(313, 220));
         frmLogin.setType(java.awt.Window.Type.UTILITY);
         frmLogin.getContentPane().setLayout(null);
 
@@ -161,8 +215,19 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         lblPantallaLogin.setBounds(-10, 0, 320, 200);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(670, 539));
+        setMinimumSize(new java.awt.Dimension(670, 559));
+        setPreferredSize(new java.awt.Dimension(670, 559));
         setResizable(false);
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
+        });
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formMouseMoved(evt);
+            }
+        });
         getContentPane().setLayout(null);
 
         btnComprar.setText("Comprar");
@@ -179,12 +244,17 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         btnDetalles.setBounds(450, 490, 71, 23);
 
         btnAgregarProducto.setText("Agregar Producto");
+        btnAgregarProducto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarProductoActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnAgregarProducto);
         btnAgregarProducto.setBounds(303, 490, 130, 23);
 
         tblProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null}
+
             },
             new String [] {
                 "Id", "Nombre", "Marca", "Costo"
@@ -208,15 +278,15 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         jScrollPane1.setViewportView(tblProductos);
 
         getContentPane().add(jScrollPane1);
-        jScrollPane1.setBounds(40, 130, 580, 340);
+        jScrollPane1.setBounds(40, 130, 430, 340);
 
         lblPuntos.setText("Puntos:");
         getContentPane().add(lblPuntos);
-        lblPuntos.setBounds(540, 110, 80, 14);
+        lblPuntos.setBounds(380, 80, 80, 14);
 
         lblNombre.setText("Nombre:");
         getContentPane().add(lblNombre);
-        lblNombre.setBounds(430, 90, 210, 14);
+        lblNombre.setBounds(380, 40, 210, 14);
 
         lblPantalla.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tienda/PantallaUniversal.png"))); // NOI18N
         lblPantalla.setMaximumSize(new java.awt.Dimension(670, 540));
@@ -234,7 +304,14 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAdministradorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdministradorActionPerformed
-        // TODO add your handling code here:
+        if(btnAdministrador.isSelected()) {
+            admin = true;
+            btnAdministrador.setText("Tarjeta");
+        }
+        else {
+            admin = false;
+            btnAdministrador.setText("Administrador");
+        }
     }//GEN-LAST:event_btnAdministradorActionPerformed
 
     private void btnComprarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnComprarActionPerformed
@@ -283,7 +360,6 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
                 }
             }
             else {
-                admin = true;
                 for(Administrador admin:adminArray) {
                     
                     if(admin.getUsuario().equals(txtUsuario.getText())) {
@@ -295,19 +371,21 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
             
             if(!contrasenia.isEmpty()) {
                 if(ControladorUsuario.verificarContrasenia(contrasenia, pswContra.getText())) {
-                    login = true;
                     txtUsuario.setText("");
                     pswContra.setText("");
                     frmLogin.setVisible(false);
                     lblPantallaInicio.setVisible(true);
                     setPantallaPrincipalVisible(true);
                     if(!admin) {
-                        lblNombre.setText("Nombre:" + tarjeta.getNombre() + " " +
+                        lblNombre.setText("Nombre: " + tarjeta.getNombre() + " " +
                             tarjeta.getApPaterno() + " " + tarjeta.getApMaterno());
                         lblPuntos.setText("Puntos: " + tarjeta.getPuntos());
                     }
-                    else
+                    else {
                         btnAgregarProducto.setVisible(true);
+                        lblNombre.setVisible(false);
+                        lblPuntos.setVisible(false);
+                    }
                     
                 }
                 else
@@ -323,6 +401,43 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField3ActionPerformed
+
+    private void btnAgregarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarProductoActionPerformed
+        txtNombreNvProd.setText("");
+        txtCostoNvProd.setText("");
+        txtMarcaNvProd.setText("");
+        frmNvProducto.setVisible(true);
+    }//GEN-LAST:event_btnAgregarProductoActionPerformed
+
+    private void txtNombreNvProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreNvProdActionPerformed
+        
+    }//GEN-LAST:event_txtNombreNvProdActionPerformed
+
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+        if(!txtNombreNvProd.getText().isEmpty() &&
+                !txtMarcaNvProd.getText().isEmpty() &&
+                !txtCostoNvProd.getText().isEmpty()) {
+            if(isDataValid()) {
+                Producto producto = new Producto(txtNombreNvProd.getText(),
+                        txtMarcaNvProd.getText(), Float.valueOf(txtCostoNvProd.getText()));
+                prodCtrl.crear(producto, prodArch, prodArray);
+                DefaultTableModel tabla = (DefaultTableModel) tblProductos.getModel();
+                addToTable(producto, tabla);
+                frmNvProducto.setVisible(false);
+            }
+        }
+        else
+            JOptionPane.showMessageDialog(frmNvProducto, "Debe llenar todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
+    }//GEN-LAST:event_btnGuardarActionPerformed
+
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
+        
+    }//GEN-LAST:event_formMouseMoved
+
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        if(!frmLogin.isVisible() || !frmLogin.isActive())
+            frmLogin.setVisible(true);
+    }//GEN-LAST:event_formMouseClicked
     
     private void setPantallaPrincipalVisible(boolean visible) {
         jScrollPane1.setVisible(visible);
@@ -339,6 +454,21 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         String[] nuevoProducto = {prod.getCodigo(), prod.getNombre(),
             prod.getMarca(), Float.toString(prod.getCosto())};
         model.addRow(nuevoProducto);
+    }
+    
+    private boolean isDataValid() {
+        if(frmNvProducto.isVisible()) {
+            try
+            {
+                float f = Float.valueOf(txtCostoNvProd.getText());
+                return true;
+            }
+            catch(NumberFormatException e) {
+                JOptionPane.showMessageDialog(frmNvProducto, "El costo debe ser un número", "Error", JOptionPane.ERROR_MESSAGE);
+                txtCostoNvProd.setText("");
+            }
+        }
+        return false;
     }
     
     public static void main(String args[]) {
@@ -370,8 +500,6 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         tienda.setSize(tienda.getPreferredSize());
         tienda.setVisible(true);
         tienda.run();
-        while(tienda.login == false) 
-            tienda.frmLogin.setVisible(true);
     }
     
     @Override
@@ -405,6 +533,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
                     }
                 }
             }
+            frmLogin.setVisible(true);
 
         } catch (InterruptedException ex) {
             Logger.getLogger(Tienda.class.getName()).log(Level.SEVERE, null, ex);
@@ -417,6 +546,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     private javax.swing.JButton btnAgregarProducto;
     private javax.swing.JButton btnComprar;
     private javax.swing.JButton btnDetalles;
+    private javax.swing.JButton btnGuardar;
     private javax.swing.JFrame frmLogin;
     private javax.swing.JFrame frmNvProducto;
     private javax.swing.JFrame frmNvTarjeta;
@@ -430,6 +560,9 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     private javax.swing.JLabel lblPuntos;
     private javax.swing.JPasswordField pswContra;
     private javax.swing.JTable tblProductos;
+    private javax.swing.JTextField txtCostoNvProd;
+    private javax.swing.JTextField txtMarcaNvProd;
+    private javax.swing.JTextField txtNombreNvProd;
     private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
 
@@ -468,7 +601,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         System.out.println(t3.getPuntos());
         System.out.println(t3.getNumeroDeRegistro());
         System.out.println(t3.getContrasenia());
-        if(ctrl_tarjetas.verificarContrasenia(t3.getContrasenia(), "mari100317"))
+        if(ControladorTarjeta.verificarContrasenia(t3.getContrasenia(), "mari100317"))
             System.out.println("Son iguales");
         
         ctrl_tarjetas.eliminar(tarjetas_array.get(5), arch_tarjetas, tarjetas_array);
