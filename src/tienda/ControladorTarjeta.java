@@ -1,5 +1,7 @@
 package tienda;
 
+import java.io.File;
+import java.io.RandomAccessFile;
 import java.util.List;
 
 public class ControladorTarjeta extends ControladorUsuario<Tarjeta>{
@@ -27,6 +29,14 @@ public class ControladorTarjeta extends ControladorUsuario<Tarjeta>{
         
         lista.add(tarjeta);
         archivo.grabarRegistro(tarjeta, tarjeta.getNumeroDeRegistro());
+        
+        File[] paths = File.listRoots();
+        for(File path:paths) {
+            File file = new File(path.toString() + "/Tarjeta");
+            if(!file.exists()) {
+            }
+            
+        }
     }
 
     @Override
