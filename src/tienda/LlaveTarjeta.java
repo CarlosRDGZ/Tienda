@@ -12,8 +12,14 @@ public class LlaveTarjeta extends ArchivoLlave<Tarjeta> {
     }
 
     @Override
-    void escrbirCodigoAcceso(String codigo) {
+    void escrbirCodigoAcceso() {
         try {
+            String clave = "Tarjeta de Lealtad";
+            String codigo = "";
+            for(int i = 0; i < clave.length(); i++){
+                int chr = clave.charAt(i);
+                codigo += Integer.toHexString(chr);
+            }
             llave.writeBytes(codigo);
         } catch (IOException ex) {
             Logger.getLogger(LlaveTarjeta.class.getName()).log(Level.SEVERE, null, ex);
@@ -26,7 +32,7 @@ public class LlaveTarjeta extends ArchivoLlave<Tarjeta> {
         {
             llave.seek(0);
             
-            byte[] bString = new byte[166];
+            byte[] bString = new byte[36];
             llave.read(bString);
             String str = new String(bString);
             return str;
@@ -99,6 +105,8 @@ public class LlaveTarjeta extends ArchivoLlave<Tarjeta> {
             String contra = getStringArreglada(bContra);
             
             int numeroDeRegistro = usuario.readInt();
+            
+            return new Tarjeta(apPaterno, apMaterno, name, idTarjeta, puntos, contra, numeroDeRegistro);
         } catch (IOException ex) {
             Logger.getLogger(LlaveTarjeta.class.getName()).log(Level.SEVERE, null, ex);
         }

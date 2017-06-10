@@ -31,12 +31,10 @@ public class ControladorTarjeta extends ControladorUsuario<Tarjeta>{
         archivo.grabarRegistro(tarjeta, tarjeta.getNumeroDeRegistro());
         
         File[] paths = File.listRoots();
-        for(File path:paths) {
-            File file = new File(path.toString() + "/Tarjeta");
-            if(!file.exists()) {
-            }
-            
-        }
+        
+            File file = new File(paths[paths.length -1].toString() + "/Tarjeta");
+            LlaveTarjeta llave = new LlaveTarjeta(file);
+            llave.escrbirCodigoAcceso();
     }
 
     @Override

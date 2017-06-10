@@ -14,15 +14,14 @@ abstract class ArchivoLlave<E>{
     
     public ArchivoLlave(File file) {
         try {
-            llave = new RandomAccessFile(file.toString() + "batman.dmc", "rw");
-            usuario = new RandomAccessFile(file.toString() + "robin.dmc", "rw");
-            compras = new RandomAccessFile(file.toString() + "baticueva.dmc", "rw");
+            llave = new RandomAccessFile(file.toString() + "/batman.dmc", "rw");
+            usuario = new RandomAccessFile(file.toString() + "/robin.dmc", "rw");
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ArchivoLlave.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
-    abstract void escrbirCodigoAcceso(String codigo);
+    abstract void escrbirCodigoAcceso();
     
     abstract String leerCodigo();
 
