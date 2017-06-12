@@ -25,5 +25,10 @@ public class ControladorAdministrador extends ControladorUsuario<Administrador>{
         list.remove(list.size() - 1);
         archivo.eliminar();
     }
+
+    void crearLlave(Administrador e, LlaveAdmin llave) {
+            llave.escrbirCodigoAcceso();
+            llave.escribirDatos(e);
+    }
     
 }

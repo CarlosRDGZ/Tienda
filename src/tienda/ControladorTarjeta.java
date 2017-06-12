@@ -3,6 +3,8 @@ package tienda;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.List;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class ControladorTarjeta extends ControladorUsuario<Tarjeta>{
     
@@ -30,11 +32,6 @@ public class ControladorTarjeta extends ControladorUsuario<Tarjeta>{
         lista.add(tarjeta);
         archivo.grabarRegistro(tarjeta, tarjeta.getNumeroDeRegistro());
         
-        File[] paths = File.listRoots();
-        
-            File file = new File(paths[paths.length -1].toString() + "/Tarjeta");
-            LlaveTarjeta llave = new LlaveTarjeta(file);
-            llave.escrbirCodigoAcceso();
     }
 
     @Override
@@ -48,5 +45,20 @@ public class ControladorTarjeta extends ControladorUsuario<Tarjeta>{
         
         lista.remove(lista.size() - 1);
         archivo.eliminar();
+    }
+    
+
+    public void crearLlave(Tarjeta tarjeta){
+        
+        File[] paths = File.listRoots();
+
+        File file = new File(paths[paths.length -1].toString() + "/Tarjeta");
+        File archivoCodigo = new File(file, "batman.dmc");
+        File archivoDatos = new File(file, "robin.dmc");
+        if(!archivoCodigo.exists() || !archivoDatos.exists()) {
+            LlaveTarjeta llave = new LlaveTarjeta(file);
+            llave.escrbirCodigoAcceso();
+            llave.escribirDatos(tarjeta);
+        }
     }
 }
