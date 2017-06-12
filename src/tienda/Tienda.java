@@ -57,6 +57,11 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         
         btnAgregarProducto.setVisible(false);
         
+        frmNvTarjeta.setSize(frmNvTarjeta.getPreferredSize());
+        frmNvTarjeta.setResizable(false);
+        
+        btnAgregarTarjeta.setVisible(false);
+        
         
         model = (DefaultTableModel) tblProductos.getModel();
         DefaultTableModel tabla = model;
@@ -81,7 +86,10 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         txtCostoNvProd = new javax.swing.JTextField();
         btnGuardar = new javax.swing.JButton();
         frmNvTarjeta = new javax.swing.JFrame();
-        jTextField3 = new javax.swing.JTextField();
+        txtPaternoTarj = new javax.swing.JTextField();
+        txtMaternoTarj = new javax.swing.JTextField();
+        txtNombreTarj = new javax.swing.JTextField();
+        pswTarjeta = new javax.swing.JPasswordField();
         jLabel1 = new javax.swing.JLabel();
         frmLogin = new javax.swing.JFrame();
         pswContra = new javax.swing.JPasswordField();
@@ -95,6 +103,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         btnComprar = new javax.swing.JButton();
         btnDetalles = new javax.swing.JButton();
         btnAgregarProducto = new javax.swing.JButton();
+        btnAgregarTarjeta = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblProductos = new javax.swing.JTable();
         lblPuntos = new javax.swing.JLabel();
@@ -154,13 +163,19 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         frmNvTarjeta.setMinimumSize(new java.awt.Dimension(610, 500));
         frmNvTarjeta.getContentPane().setLayout(null);
 
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
-            }
-        });
-        frmNvTarjeta.getContentPane().add(jTextField3);
-        jTextField3.setBounds(220, 130, 170, 20);
+        txtPaternoTarj.setText("paterno");
+        frmNvTarjeta.getContentPane().add(txtPaternoTarj);
+        txtPaternoTarj.setBounds(250, 190, 220, 20);
+
+        txtMaternoTarj.setText("materno");
+        frmNvTarjeta.getContentPane().add(txtMaternoTarj);
+        txtMaternoTarj.setBounds(250, 250, 220, 20);
+
+        txtNombreTarj.setText("nombre");
+        frmNvTarjeta.getContentPane().add(txtNombreTarj);
+        txtNombreTarj.setBounds(250, 120, 220, 20);
+        frmNvTarjeta.getContentPane().add(pswTarjeta);
+        pswTarjeta.setBounds(250, 310, 220, 20);
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tienda/Nuevatarjeta.png"))); // NOI18N
         frmNvTarjeta.getContentPane().add(jLabel1);
@@ -227,14 +242,14 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         setMinimumSize(new java.awt.Dimension(670, 559));
         setPreferredSize(new java.awt.Dimension(670, 559));
         setResizable(false);
-        addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                formMouseClicked(evt);
-            }
-        });
         addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 formMouseMoved(evt);
+            }
+        });
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
             }
         });
         getContentPane().setLayout(null);
@@ -260,6 +275,15 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         });
         getContentPane().add(btnAgregarProducto);
         btnAgregarProducto.setBounds(303, 490, 130, 23);
+
+        btnAgregarTarjeta.setText("Agregar Tarjeta");
+        btnAgregarTarjeta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarTarjetaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnAgregarTarjeta);
+        btnAgregarTarjeta.setBounds(510, 140, 110, 23);
 
         tblProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -379,6 +403,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
                         btnAgregarProducto.setVisible(true);
                         lblNombre.setVisible(false);
                         lblPuntos.setVisible(false);
+                        btnAgregarTarjeta.setVisible(true);
                     }
                     
                 }
@@ -389,10 +414,6 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         else
             JOptionPane.showMessageDialog(frmLogin, "Debe llenar todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
     }//GEN-LAST:event_btnAcederActionPerformed
-
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField3ActionPerformed
 
     private void btnAgregarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarProductoActionPerformed
         txtNombreNvProd.setText("");
@@ -463,6 +484,13 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
             JOptionPane.showMessageDialog(frmPrimerUso, "Debe llenar todos los campos", "Error",JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnGuardarPrimeroActionPerformed
+
+    private void btnAgregarTarjetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarTarjetaActionPerformed
+        txtNombreTarj.setText("");
+        txtPaternoTarj.setText("");
+        txtMaternoTarj.setText("");
+        frmNvTarjeta.setVisible(true);
+    }//GEN-LAST:event_btnAgregarTarjetaActionPerformed
     
     private void setPantallaPrincipalVisible(boolean visible) {
         jScrollPane1.setVisible(visible);
@@ -604,6 +632,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAceder;
     private javax.swing.JButton btnAgregarProducto;
+    private javax.swing.JButton btnAgregarTarjeta;
     private javax.swing.JButton btnComprar;
     private javax.swing.JButton btnDetalles;
     private javax.swing.JButton btnGuardar;
@@ -614,7 +643,6 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     private javax.swing.JFrame frmPrimerUso;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField3;
     private javax.swing.JLabel lblNombre;
     private javax.swing.JLabel lblPantalla;
     private javax.swing.JLabel lblPantallaInicio;
@@ -623,10 +651,14 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     private javax.swing.JLabel lblPuntos;
     private javax.swing.JPasswordField pswContra;
     private javax.swing.JPasswordField pswPrimerContra;
+    private javax.swing.JPasswordField pswTarjeta;
     private javax.swing.JTable tblProductos;
     private javax.swing.JTextField txtCostoNvProd;
     private javax.swing.JTextField txtMarcaNvProd;
+    private javax.swing.JTextField txtMaternoTarj;
     private javax.swing.JTextField txtNombreNvProd;
+    private javax.swing.JTextField txtNombreTarj;
+    private javax.swing.JTextField txtPaternoTarj;
     private javax.swing.JTextField txtPrimerUsuario;
     // End of variables declaration//GEN-END:variables
 }

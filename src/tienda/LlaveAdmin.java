@@ -23,7 +23,6 @@ public class LlaveAdmin extends ArchivoLlave<Administrador> {
                 int chr = clave.charAt(i);
                 codigo += Integer.toHexString((int)chr);
             }
-            System.out.println(codigo);
             llave.writeBytes(codigo);
         } catch (IOException ex) {
             Logger.getLogger(LlaveAdmin.class.getName()).log(Level.SEVERE, null, ex);

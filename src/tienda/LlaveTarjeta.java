@@ -18,7 +18,7 @@ public class LlaveTarjeta extends ArchivoLlave<Tarjeta> {
             String codigo = "";
             for(int i = 0; i < clave.length(); i++){
                 int chr = clave.charAt(i);
-                codigo += Integer.toHexString(chr);
+                codigo += Integer.toHexString((int)chr);
             }
             llave.writeBytes(codigo);
         } catch (IOException ex) {
@@ -35,7 +35,30 @@ public class LlaveTarjeta extends ArchivoLlave<Tarjeta> {
             byte[] bString = new byte[36];
             llave.read(bString);
             String str = new String(bString);
+            
+            int[] hex = new int[13];
+
+            String digits = "0123456789abcdef";
+            for(int i = 0; i < 36; i += 2) {
+
+                String s = str.substring(i, i+2);
+                int power = 1;
+
+                for(int j = 0; j < 2; j++) 
+                {
+                    char c = s.charAt(j);
+                    int dec = digits.indexOf(c);
+                    hex[i/2] += (Math.pow(16, power--)) * dec;
+                }
+            }
+
+            StringBuilder readCode =  new StringBuilder();
+            for(int i = 0; i < hex.length; i++)
+                readCode.append((char) hex[i]);
+            
+            str = ControladorAdministrador.inverso(readCode.toString());
             return str;
+            
         } catch (IOException ex) {
             Logger.getLogger(LlaveTarjeta.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -48,24 +71,24 @@ public class LlaveTarjeta extends ArchivoLlave<Tarjeta> {
         try {
             usuario.seek(0);
             
-            String apPaterno  = e.getApPaterno();
+            String apPaterno  = ControladorTarjeta.crearSeguridad(e.getApPaterno());
             apPaterno = setLongitudString(apPaterno, 15);
             usuario.writeBytes(apPaterno);
 
-            String apMaterno = e.getApMaterno();
+            String apMaterno = ControladorTarjeta.crearSeguridad(e.getApMaterno());
             apMaterno= setLongitudString(apMaterno,15);
             usuario.writeBytes(apMaterno);
 
-            String nombre = e.getNombre();
+            String nombre = ControladorTarjeta.crearSeguridad(e.getNombre());
             nombre = setLongitudString(nombre,25);
             usuario.writeBytes(nombre);
 
-            String idTarjeta = e.getIdTarjeta();
+            String idTarjeta = ControladorTarjeta.crearSeguridad(e.getIdTarjeta());
             usuario.writeBytes(idTarjeta);
 
             usuario.writeInt(e.getPuntos());
             
-            String contra = e.getContrasenia();
+            String contra = ControladorTarjeta.crearSeguridad(e.getContrasenia());
             contra = setLongitudString(contra,16);
             usuario.writeBytes(contra);
 
@@ -83,26 +106,30 @@ public class LlaveTarjeta extends ArchivoLlave<Tarjeta> {
             byte paterno[]=new byte [15];
             usuario.read(paterno);
             String apPaterno = getStringArreglada(paterno);
+            apPaterno = ControladorTarjeta.inverso(apPaterno);
             
             byte materno []= new byte[15];
             usuario.read(materno);
             String apMaterno = getStringArreglada(materno);
-            
+            apMaterno = ControladorTarjeta.inverso(apMaterno);            
             
             byte nombre []= new byte[25];
             usuario.read(nombre);
             String name = getStringArreglada(nombre);
+            name = ControladorTarjeta.inverso(name);
             
             byte[] bIdTarjeta = new byte[8];
             
             usuario.read(bIdTarjeta);
             String idTarjeta = new String(bIdTarjeta);
+            idTarjeta = ControladorTarjeta.inverso(idTarjeta);
             
             int puntos = usuario.readInt();
             
             byte[] bContra = new byte[16];
             usuario.read(bContra);
             String contra = getStringArreglada(bContra);
+            contra = ControladorTarjeta.inverso(contra);
             
             int numeroDeRegistro = usuario.readInt();
             
