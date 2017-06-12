@@ -46,8 +46,11 @@ public abstract class Archivo<E>
     
     public long obtenerIdActual() {
         try {
+            if(idsArchivo.length() == 0) return 0;
+            else {
             idsArchivo.seek(0);
             return idsArchivo.readLong();
+            }
         } catch (IOException ex) {
             Logger.getLogger(Archivo.class.getName()).log(Level.SEVERE, null, ex);
         }
