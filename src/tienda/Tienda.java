@@ -1,6 +1,7 @@
 package tienda;
 
 import java.io.File;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -9,7 +10,9 @@ import javax.swing.table.DefaultTableModel;
 
 public class Tienda extends javax.swing.JFrame implements Runnable{
 
-    private boolean admin;
+    private boolean login;
+    private boolean adminLogin;
+
     
     private ArchivoTarjeta tArch;
     private ArrayList<Tarjeta> tArray;
@@ -23,12 +26,16 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     private ArrayList<Producto> prodArray;
     private ControladorProductos prodCtrl;
     
-    private final DefaultTableModel model;
 
+    LlaveAdmin adminSystem;
+    LlaveTarjeta tarjSystem;
+    
     public Tienda() {
         initComponents();
         
-        admin = false;
+        login = false;
+        adminLogin =false;
+
         
         tArch = new ArchivoTarjeta("tarjetas");
         tArray = tArch.leerTodos();
@@ -72,18 +79,21 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
 
         frmNvProducto = new javax.swing.JFrame();
         txtNombreNvProd = new javax.swing.JTextField();
-        txtMarcaNvProd = new javax.swing.JTextField();
         txtCostoNvProd = new javax.swing.JTextField();
-        btnGuardar = new javax.swing.JButton();
+        txtMarcaNvProd = new javax.swing.JTextField();
+        btnGuardarProd = new javax.swing.JButton();
         frmNvTarjeta = new javax.swing.JFrame();
         jTextField3 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         frmLogin = new javax.swing.JFrame();
-        txtUsuario = new javax.swing.JTextField();
         pswContra = new javax.swing.JPasswordField();
         btnAceder = new javax.swing.JButton();
         btnAdministrador = new javax.swing.JToggleButton();
         lblPantallaLogin = new javax.swing.JLabel();
+        frmPrimerUso = new javax.swing.JFrame();
+        txtPrimerUsuario = new javax.swing.JTextField();
+        pswPrimerContra = new javax.swing.JPasswordField();
+        btnGuardarPrimero = new javax.swing.JButton();
         btnComprar = new javax.swing.JButton();
         btnDetalles = new javax.swing.JButton();
         btnAgregarProducto = new javax.swing.JButton();
@@ -94,24 +104,17 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         lblPantalla = new javax.swing.JLabel();
         lblPantallaInicio = new javax.swing.JLabel();
 
-        frmNvProducto.setMinimumSize(new java.awt.Dimension(364, 246));
-        frmNvProducto.setPreferredSize(new java.awt.Dimension(364, 246));
 
         txtNombreNvProd.setText("nombre");
-        txtNombreNvProd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNombreNvProdActionPerformed(evt);
-            }
-        });
-
-        txtMarcaNvProd.setText("marca");
 
         txtCostoNvProd.setText("costo");
 
-        btnGuardar.setText("Guardar");
-        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+        txtMarcaNvProd.setText("marca");
+
+        btnGuardarProd.setText("jButton1");
+        btnGuardarProd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardarActionPerformed(evt);
+                btnGuardarProdActionPerformed(evt);
             }
         });
 
@@ -120,27 +123,27 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         frmNvProductoLayout.setHorizontalGroup(
             frmNvProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(frmNvProductoLayout.createSequentialGroup()
-                .addGap(119, 119, 119)
+                .addGap(168, 168, 168)
                 .addGroup(frmNvProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnGuardar)
+                    .addComponent(btnGuardarProd)
                     .addGroup(frmNvProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(txtNombreNvProd, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
-                        .addComponent(txtMarcaNvProd)
-                        .addComponent(txtCostoNvProd)))
-                .addContainerGap(75, Short.MAX_VALUE))
+                        .addComponent(txtNombreNvProd, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
+                        .addComponent(txtCostoNvProd)
+                        .addComponent(txtMarcaNvProd)))
+                .addContainerGap(98, Short.MAX_VALUE))
         );
         frmNvProductoLayout.setVerticalGroup(
             frmNvProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(frmNvProductoLayout.createSequentialGroup()
-                .addGap(35, 35, 35)
+                .addGap(30, 30, 30)
                 .addComponent(txtNombreNvProd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(txtMarcaNvProd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29)
+                .addComponent(txtMarcaNvProd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
                 .addComponent(txtCostoNvProd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
-                .addComponent(btnGuardar)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addGap(49, 49, 49)
+                .addComponent(btnGuardarProd)
+                .addContainerGap(81, Short.MAX_VALUE))
         );
 
         frmNvTarjeta.setTitle("Nueva tarjeta");
@@ -164,19 +167,6 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         frmLogin.setPreferredSize(new java.awt.Dimension(313, 220));
         frmLogin.setType(java.awt.Window.Type.UTILITY);
         frmLogin.getContentPane().setLayout(null);
-
-        txtUsuario.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtUsuarioFocusLost(evt);
-            }
-        });
-        txtUsuario.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtUsuarioActionPerformed(evt);
-            }
-        });
-        frmLogin.getContentPane().add(txtUsuario);
-        txtUsuario.setBounds(110, 80, 147, 20);
 
         pswContra.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -213,6 +203,40 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         lblPantallaLogin.setText("jLabel1");
         frmLogin.getContentPane().add(lblPantallaLogin);
         lblPantallaLogin.setBounds(-10, 0, 320, 200);
+
+        txtPrimerUsuario.setText("usuario");
+
+        btnGuardarPrimero.setText("Guardar");
+        btnGuardarPrimero.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarPrimeroActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout frmPrimerUsoLayout = new javax.swing.GroupLayout(frmPrimerUso.getContentPane());
+        frmPrimerUso.getContentPane().setLayout(frmPrimerUsoLayout);
+        frmPrimerUsoLayout.setHorizontalGroup(
+            frmPrimerUsoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, frmPrimerUsoLayout.createSequentialGroup()
+                .addContainerGap(117, Short.MAX_VALUE)
+                .addGroup(frmPrimerUsoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnGuardarPrimero)
+                    .addGroup(frmPrimerUsoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(txtPrimerUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
+                        .addComponent(pswPrimerContra)))
+                .addGap(96, 96, 96))
+        );
+        frmPrimerUsoLayout.setVerticalGroup(
+            frmPrimerUsoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(frmPrimerUsoLayout.createSequentialGroup()
+                .addGap(72, 72, 72)
+                .addComponent(txtPrimerUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(35, 35, 35)
+                .addComponent(pswPrimerContra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31)
+                .addComponent(btnGuardarPrimero)
+                .addContainerGap(99, Short.MAX_VALUE))
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(670, 559));
@@ -292,6 +316,11 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         lblPantalla.setMaximumSize(new java.awt.Dimension(670, 540));
         lblPantalla.setMinimumSize(new java.awt.Dimension(670, 540));
         lblPantalla.setName(""); // NOI18N
+        lblPantalla.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblPantallaMouseClicked(evt);
+            }
+        });
         getContentPane().add(lblPantalla);
         lblPantalla.setBounds(0, 0, 660, 540);
 
@@ -303,32 +332,9 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnAdministradorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdministradorActionPerformed
-        if(btnAdministrador.isSelected()) {
-            admin = true;
-            btnAdministrador.setText("Tarjeta");
-        }
-        else {
-            admin = false;
-            btnAdministrador.setText("Administrador");
-        }
-    }//GEN-LAST:event_btnAdministradorActionPerformed
-
     private void btnComprarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnComprarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnComprarActionPerformed
-
-    private void txtUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsuarioActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtUsuarioActionPerformed
-
-    private void txtUsuarioFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtUsuarioFocusLost
-      /*  if(txtUsuario.getText().length() > 8) {
-            JOptionPane.showMessageDialog(frmLogin, "Usuario no debe ser mayor a 8 caracteres", "Error", JOptionPane.ERROR_MESSAGE);
-            txtUsuario.setText("");
-            txtUsuario.requestFocus();
-        }*/
-    }//GEN-LAST:event_txtUsuarioFocusLost
 
     private void pswContraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pswContraActionPerformed
         // TODO add your handling code here:
@@ -343,41 +349,48 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     }//GEN-LAST:event_pswContraFocusLost
 
     private void btnAcederActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcederActionPerformed
-        if(!txtUsuario.getText().isEmpty() && ! pswContra.getText().isEmpty()) {
+        if(! pswContra.getText().isEmpty()) {
             
             String contrasenia = "";
+            String contraLlave = "";
             Tarjeta tarjeta = null;
             
-            if(!btnAdministrador.isSelected()) {
-                
+            if(!adminLogin) {
+                Tarjeta tarjetaLlave = tarjSystem.leerDatos();
                 for(Tarjeta tar:tArray) {
                     
-                    if(tar.getIdTarjeta().equals(txtUsuario.getText())) {
+                    if(tar.getIdTarjeta().equals(tarjetaLlave.getIdTarjeta())) {
                         contrasenia = tar.getContrasenia();
+                        contraLlave = tarjetaLlave.getContrasenia();
                         tarjeta = tar;
                         break;
                     }
                 }
             }
             else {
+                adminLogin = true;
+                Administrador adminLlave = adminSystem.leerDatos();
                 for(Administrador admin:adminArray) {
                     
-                    if(admin.getUsuario().equals(txtUsuario.getText())) {
+                    if(admin.getUsuario().equals(adminLlave.getUsuario())) {
                         contrasenia = admin.getContrasenia();
+                        contraLlave = adminLlave.getContrasenia();
                         break;
                     }
                 }      
             }
             
             if(!contrasenia.isEmpty()) {
-                if(ControladorUsuario.verificarContrasenia(contrasenia, pswContra.getText())) {
-                    txtUsuario.setText("");
+                if(ControladorUsuario.verificarContrasenia(contrasenia, pswContra.getText(), contraLlave)) {
+                    login = true;
                     pswContra.setText("");
                     frmLogin.setVisible(false);
                     lblPantallaInicio.setVisible(true);
                     setPantallaPrincipalVisible(true);
-                    if(!admin) {
-                        lblNombre.setText("Nombre: " + tarjeta.getNombre() + " " +
+
+                    if(!adminLogin) {
+                        lblNombre.setText("Nombre:" + tarjeta.getNombre() + " " +
+
                             tarjeta.getApPaterno() + " " + tarjeta.getApMaterno());
                         lblPuntos.setText("Puntos: " + tarjeta.getPuntos());
                     }
@@ -402,6 +415,43 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField3ActionPerformed
 
+    private void btnGuardarPrimeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarPrimeroActionPerformed
+        if(!txtPrimerUsuario.getText().isEmpty() && !pswPrimerContra.getText().isEmpty()) {
+            Administrador admin = new Administrador(txtPrimerUsuario.getText(),
+                    ControladorAdministrador.crearSeguridad(pswPrimerContra.getText()));
+            adminCtrl.crear(admin, adminArch, adminArray);
+            File[] paths = File.listRoots();
+            int i = 0;
+            for(File path:paths) {
+                File file = new File(path.toString() + "/Program Files");
+                if(!file.exists()) {
+                    File folder = new File(paths[paths.length -1].toString() + "/Tarjeta");
+                    folder.mkdir();
+                    LlaveAdmin llave = new LlaveAdmin(folder);
+                    llave.escrbirCodigoAcceso();
+                    llave.escribirDatos(admin);
+                    adminArch.grabarIdActual(adminArch.obtenerIdActual() + 1);
+                    frmPrimerUso.setVisible(false);
+                    login = false;
+                    break;
+                }
+                i++;
+            }
+            if(i == paths.length) {
+                JOptionPane.showMessageDialog(frmPrimerUso,"Inserte un USB");
+                adminArch.eliminar();
+                adminArray.clear();
+            }
+        }
+        else {
+            JOptionPane.showMessageDialog(frmPrimerUso, "Debe llenar todos los campos", "Error",JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnGuardarPrimeroActionPerformed
+
+    private void btnAdministradorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdministradorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAdministradorActionPerformed
+
     private void btnAgregarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarProductoActionPerformed
         txtNombreNvProd.setText("");
         txtCostoNvProd.setText("");
@@ -409,11 +459,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         frmNvProducto.setVisible(true);
     }//GEN-LAST:event_btnAgregarProductoActionPerformed
 
-    private void txtNombreNvProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreNvProdActionPerformed
-        
-    }//GEN-LAST:event_txtNombreNvProdActionPerformed
-
-    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+    private void btnGuardarProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarProdActionPerformed
         if(!txtNombreNvProd.getText().isEmpty() &&
                 !txtMarcaNvProd.getText().isEmpty() &&
                 !txtCostoNvProd.getText().isEmpty()) {
@@ -428,16 +474,12 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         }
         else
             JOptionPane.showMessageDialog(frmNvProducto, "Debe llenar todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
-    }//GEN-LAST:event_btnGuardarActionPerformed
+    }//GEN-LAST:event_btnGuardarProdActionPerformed
 
-    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
-        
-    }//GEN-LAST:event_formMouseMoved
-
-    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
-        if(!frmLogin.isVisible() || !frmLogin.isActive())
+    private void lblPantallaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblPantallaMouseClicked
+         if(!frmLogin.isVisible() || !frmLogin.isActive())
             frmLogin.setVisible(true);
-    }//GEN-LAST:event_formMouseClicked
+    }//GEN-LAST:event_lblPantallaMouseClicked
     
     private void setPantallaPrincipalVisible(boolean visible) {
         jScrollPane1.setVisible(visible);
@@ -447,6 +489,21 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         lblPantalla.setVisible(visible);
         lblNombre.setVisible(visible);
         lblPuntos.setVisible(visible);
+    }
+    
+    private boolean isDataValid() {
+        if(frmNvProducto.isVisible()) {
+            try
+            {
+                float f = Float.valueOf(txtCostoNvProd.getText());
+                return true;
+            }
+            catch(NumberFormatException e) {
+                JOptionPane.showMessageDialog(frmNvProducto, "El costo debe ser un número", "Error", JOptionPane.ERROR_MESSAGE);
+                txtCostoNvProd.setText("");
+            }
+        }
+        return false;
     }
     
     private void addToTable(Producto prod, DefaultTableModel model)
@@ -484,18 +541,13 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Tienda.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Tienda.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Tienda.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Tienda.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        
+        //</editor-fold>
 
-        defaultAdmin();
         Tienda tienda = new Tienda();
         tienda.setSize(tienda.getPreferredSize());
         tienda.setVisible(true);
@@ -507,30 +559,70 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         try
         {
             System.out.println("Main thread");
+            
+            if(adminArch.numeroDeRegistros() == 0) {
+                String usuario = adminArch.obtenerIdActual() + "";
+                while(usuario.length() < 8)
+                    usuario = "0" + usuario;
+                txtPrimerUsuario.setText(usuario);
+                txtPrimerUsuario.setEditable(false);
+                frmPrimerUso.setVisible(true);
+                login = true;
+            }
+
             boolean fileFound = false;
             while(fileFound == false){
-                
+
                 Thread.sleep(2000);
 
                 File[] paths = File.listRoots();
 
                 for(File path:paths) {
-                    File tarjeta = new File(path.toString() + "/Tarjeta","Tarjeta.dmc");
+                    File llave = new File(path.toString() + "/Tarjeta","batman.dmc");
+                    File usuario = new File(path.toString() + "/Tarjeta","robin.dmc");
 
-                    if(tarjeta.exists()) {
-                        System.out.println("Tajeta Encontrada");
+                    if(llave.exists() && usuario.exists()) {
+                        //System.out.println("Tajeta Encontrada");
+                        File carpeta = new File(path.toString() + "/Tarjeta");
                         
-                        if(Controlador1.tarjetaValida(tarjeta)) {
-                            fileFound = true;
-                            System.out.println("Tarjeta Valida");
-                            break;
+                        LlaveAdmin admin = new LlaveAdmin(carpeta);
+                        LlaveTarjeta tarj = new LlaveTarjeta(carpeta);
+                        
+                        if("Administrador".equals(admin.leerCodigo())) {
+                            Administrador administrador = admin.leerDatos();
+                            for(Administrador a:adminArray) {
+                                if(a.getUsuario().equals(administrador.getUsuario()) &&
+                                        a.getContrasenia().equals(administrador.getContrasenia()) &&
+                                        a.getNumDeRegistro() == administrador.getNumDeRegistro()) {
+                                    fileFound = true;
+                                    adminLogin = true;
+                                    adminSystem = new LlaveAdmin(carpeta);
+                                    break;
+                                }
+                            }
                         }
-                        else
-                            System.out.println("Tarjeta No Valida");
+                        else if("Tarjeta de Lealtad".equals(tarj.leerDatos())) {
+                            Tarjeta tarjeta = tarj.leerDatos();
+                            for(Tarjeta t:tArray) {
+                                if(t.getApMaterno().equals(tarjeta.getApMaterno()) &&
+                                        t.getApPaterno().equals(tarjeta.getApPaterno()) &&
+                                        t.getNombre().equals(tarjeta.getNombre()) &&
+                                        t.getContrasenia().equals(tarjeta.getContrasenia()) &&
+                                        t.getNumeroDeRegistro() == tarjeta.getNumeroDeRegistro() &&
+                                        t.getIdTarjeta().equals(tarjeta.getIdTarjeta())) {
+                                    fileFound = true;
+                                    tarjSystem = new LlaveTarjeta(carpeta);
+                                    break;
+                                } 
+                            }
+                        }
+                        //    System.out.println("Tarjeta Valida");
+                      //  else
+                         //  System.out.println("Tarjeta No Valida");
                     }
-                    else {
-                        System.out.println("Tarjeta No Encontrada");
-                    }
+                   // else {
+                      //  System.out.println("Tarjeta No Encontrada");
+                  //  }
                 }
             }
             frmLogin.setVisible(true);
@@ -546,10 +638,12 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     private javax.swing.JButton btnAgregarProducto;
     private javax.swing.JButton btnComprar;
     private javax.swing.JButton btnDetalles;
-    private javax.swing.JButton btnGuardar;
+    private javax.swing.JButton btnGuardarPrimero;
+    private javax.swing.JButton btnGuardarProd;
     private javax.swing.JFrame frmLogin;
     private javax.swing.JFrame frmNvProducto;
     private javax.swing.JFrame frmNvTarjeta;
+    private javax.swing.JFrame frmPrimerUso;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField3;
@@ -559,14 +653,15 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     private javax.swing.JLabel lblPantallaLogin;
     private javax.swing.JLabel lblPuntos;
     private javax.swing.JPasswordField pswContra;
+    private javax.swing.JPasswordField pswPrimerContra;
     private javax.swing.JTable tblProductos;
     private javax.swing.JTextField txtCostoNvProd;
     private javax.swing.JTextField txtMarcaNvProd;
     private javax.swing.JTextField txtNombreNvProd;
-    private javax.swing.JTextField txtUsuario;
+    private javax.swing.JTextField txtPrimerUsuario;
     // End of variables declaration//GEN-END:variables
 
-    private static void pruebaTarjetaAgregarSinGUI() {
+/*    private static void pruebaTarjetaAgregarSinGUI() {
                
        
         ArchivoTarjeta arch_tarjetas = new ArchivoTarjeta("tarjetas");
@@ -630,5 +725,5 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         
         
     }
-
+*/
 }
