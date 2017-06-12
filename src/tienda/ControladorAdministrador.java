@@ -10,7 +10,7 @@ public class ControladorAdministrador extends ControladorUsuario<Administrador>{
         
         list.add(admin);
         
-        archivo.grabarRegistro(admin, admin.getNumDeRegistro());
+        archivo.grabarRegistro(admin, archivo.numeroDeRegistros());
     }
 
     @Override
