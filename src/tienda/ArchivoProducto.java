@@ -71,7 +71,7 @@ public class ArchivoProducto extends Archivo<Producto>
             
             archivo.writeBytes(setLongitudString(producto.getNombre(), 20));
             
-            archivo.writeBytes(setLongitudString(producto.getNombre(), 10));
+            archivo.writeBytes(setLongitudString(producto.getMarca(), 10));
             
             archivo.writeFloat(producto.getCosto());
             
@@ -89,7 +89,7 @@ public class ArchivoProducto extends Archivo<Producto>
     {
         ArrayList<Producto > todos = new ArrayList();
         for(int i = 0; i < numeroDeRegistros(); i++)
-            todos.add(null);
+            todos.add(leerRegistro(i));
         return todos;
     }
 }

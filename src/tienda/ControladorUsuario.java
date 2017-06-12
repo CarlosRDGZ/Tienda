@@ -6,8 +6,7 @@ abstract class ControladorUsuario<E> implements Controlador<E> {
     public static String crearSeguridad(String contrasenia) {
         String sub1 = contrasenia.substring(0, contrasenia.length()/2);
         String sub2 = contrasenia.substring((contrasenia.length()/2));
-        System.out.println(sub1);
-        System.out.println(sub2);
+        
         StringBuilder contra = new StringBuilder();
         
         for(int i = 0; i < contrasenia.length(); i++) {
