@@ -1,20 +1,20 @@
 package tienda;
 
-import java.time.LocalDateTime;
+/*import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
+import java.time.format.FormatStyle;*/
 import java.util.List;
 
 public class ControladorCompra implements Controlador<Compra> {
 
     @Override
     public void crear(Compra compra, Archivo archivo, List<Compra> list) {
-        LocalDateTime ahora = LocalDateTime.now();
+       /* LocalDateTime ahora = LocalDateTime.now();
         String hora = ahora.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM));
         String fecha = ahora.format(DateTimeFormatter.ISO_LOCAL_DATE);
         
         compra.setFecha(fecha);
-        compra.setHora(hora);
+        compra.setHora(hora);*/
         compra.setNumRegistro(archivo.numeroDeRegistros());
         
         list.add(compra);
