@@ -970,7 +970,6 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     }//GEN-LAST:event_btnImprimirComprasTarjetaActionPerformed
 
     private void btnContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinuarActionPerformed
-        //[607, 428][320, 160]
         frmPrimerUso.setResizable(true);
         lblInstPrimerUso.setVisible(false);
         btnContinuar.setVisible(false);
