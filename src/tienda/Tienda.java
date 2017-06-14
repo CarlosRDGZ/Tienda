@@ -181,9 +181,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         lblPantallaInicio = new javax.swing.JLabel();
 
         frmNvProducto.setTitle("Nuevo Producto");
-        frmNvProducto.setMaximumSize(new java.awt.Dimension(380, 355));
         frmNvProducto.setMinimumSize(new java.awt.Dimension(380, 355));
-        frmNvProducto.setPreferredSize(new java.awt.Dimension(380, 355));
         frmNvProducto.getContentPane().setLayout(null);
 
         txtNombreNvProd.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
@@ -221,7 +219,6 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
 
         frmNvTarjeta.setTitle("Nueva tarjeta");
         frmNvTarjeta.setMinimumSize(new java.awt.Dimension(534, 446));
-        frmNvTarjeta.setPreferredSize(new java.awt.Dimension(534, 446));
         frmNvTarjeta.getContentPane().setLayout(null);
 
         txtPaternoTarj.setText("paterno");
@@ -252,20 +249,23 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         jLabel1.setBounds(0, -10, 620, 510);
 
         frmLogin.setTitle("Iniciar Sesion");
-        frmLogin.setMaximumSize(new java.awt.Dimension(260, 155));
         frmLogin.setMinimumSize(new java.awt.Dimension(260, 155));
-        frmLogin.setPreferredSize(new java.awt.Dimension(260, 155));
         frmLogin.setType(java.awt.Window.Type.UTILITY);
         frmLogin.getContentPane().setLayout(null);
 
+        pswContra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pswContraActionPerformed(evt);
+            }
+        });
         pswContra.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 pswContraFocusLost(evt);
             }
         });
-        pswContra.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pswContraActionPerformed(evt);
+        pswContra.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                pswContraKeyPressed(evt);
             }
         });
         frmLogin.getContentPane().add(pswContra);
@@ -284,9 +284,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         frmLogin.getContentPane().add(lblPantallaLogin);
         lblPantallaLogin.setBounds(-10, 0, 270, 150);
 
-        frmPrimerUso.setMaximumSize(new java.awt.Dimension(607, 428));
         frmPrimerUso.setMinimumSize(new java.awt.Dimension(310, 165));
-        frmPrimerUso.setPreferredSize(new java.awt.Dimension(607, 428));
         frmPrimerUso.setResizable(false);
         frmPrimerUso.getContentPane().setLayout(null);
 
@@ -323,9 +321,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         lblPrimerUso.setBounds(0, -30, 310, 170);
 
         dlgComprar.setTitle("Comprar");
-        dlgComprar.setMaximumSize(new java.awt.Dimension(262, 163));
         dlgComprar.setMinimumSize(new java.awt.Dimension(262, 163));
-        dlgComprar.setPreferredSize(new java.awt.Dimension(262, 163));
         dlgComprar.getContentPane().setLayout(null);
 
         btnContinuarCompraEfectivo.setText("Comprar");
@@ -391,9 +387,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         lblPantallaComprarEfectivo.setBounds(0, 0, 290, 150);
 
         frmComprasTarjeta.setTitle("Registro de Compras");
-        frmComprasTarjeta.setMaximumSize(new java.awt.Dimension(480, 410));
         frmComprasTarjeta.setMinimumSize(new java.awt.Dimension(480, 410));
-        frmComprasTarjeta.setPreferredSize(new java.awt.Dimension(480, 410));
         frmComprasTarjeta.setResizable(false);
         frmComprasTarjeta.getContentPane().setLayout(null);
 
@@ -431,9 +425,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         frmComprasTarjeta.getContentPane().add(lblCompras);
         lblCompras.setBounds(-10, -10, 490, 520);
 
-        frmDetallesProducto.setMaximumSize(new java.awt.Dimension(510, 436));
         frmDetallesProducto.setMinimumSize(new java.awt.Dimension(510, 436));
-        frmDetallesProducto.setPreferredSize(new java.awt.Dimension(510, 436));
         frmDetallesProducto.setResizable(false);
         frmDetallesProducto.getContentPane().setLayout(null);
 
@@ -698,12 +690,14 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
                         btnComprar.setVisible(false);
                     }
                 }
-                else
+                else {
                     JOptionPane.showMessageDialog(frmLogin, "Contraseña incorrecta", "Error", JOptionPane.ERROR_MESSAGE);
+                    pswContra.requestFocus();
+                }
             }
         }
         else
-            JOptionPane.showMessageDialog(frmLogin, "Debe llenar todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(frmLogin, "Ingrese su contraseña", "Error", JOptionPane.ERROR_MESSAGE);
     }//GEN-LAST:event_btnAcederActionPerformed
 
     private void btnAgregarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarProductoActionPerformed
@@ -986,6 +980,11 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         frmPrimerUso.setSize(310, 165);
         frmPrimerUso.setResizable(false);
     }//GEN-LAST:event_btnContinuarActionPerformed
+
+    private void pswContraKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pswContraKeyPressed
+        if(evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER)
+            btnAceder.doClick();
+    }//GEN-LAST:event_pswContraKeyPressed
     
     private void setPantallaPrincipalVisible(boolean visible) {
         jScrollPane1.setVisible(visible);
