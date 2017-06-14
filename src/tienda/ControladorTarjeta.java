@@ -27,6 +27,7 @@ public class ControladorTarjeta extends ControladorUsuario<Tarjeta>{
         
         lista.add(tarjeta);
         archivo.grabarRegistro(tarjeta, tarjeta.getNumeroDeRegistro());
+        
     }
 
     @Override
@@ -40,5 +41,36 @@ public class ControladorTarjeta extends ControladorUsuario<Tarjeta>{
         
         lista.remove(lista.size() - 1);
         archivo.eliminar();
+    }
+    
+    void crearLlave(Tarjeta e, LlaveTarjeta llave) {
+        llave.escrbirCodigoAcceso();
+        llave.escribirDatos(e);
+    }
+    
+    public void comprarEfectivo(Tarjeta tarjeta, ArchivoTarjeta archivo,
+            List<Tarjeta> list, LlaveTarjeta llave, Producto producto) {
+        
+        int puntos = (int)producto.getCosto()/10;
+        tarjeta.setPuntos(tarjeta.getPuntos() + puntos);
+        
+        archivo.grabarRegistro(tarjeta, tarjeta.getNumeroDeRegistro());
+        
+        list.set(tarjeta.getNumeroDeRegistro(), tarjeta);
+        
+        llave.escribirDatos(tarjeta);
+    }
+    
+    public void comprarPuntos(Tarjeta tarjeta, ArchivoTarjeta archivo,
+            List<Tarjeta> list, LlaveTarjeta llave, Producto producto) {
+        
+        int puntos = ((int)producto.getCosto()*115)/100;
+        tarjeta.setPuntos(tarjeta.getPuntos() - puntos);
+        
+        archivo.grabarRegistro(tarjeta, tarjeta.getNumeroDeRegistro());
+        
+        list.set(tarjeta.getNumeroDeRegistro(), tarjeta);
+        
+        llave.escribirDatos(tarjeta);
     }
 }

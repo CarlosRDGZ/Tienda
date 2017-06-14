@@ -16,6 +16,13 @@ public class Producto
         this.marca = marca;
     }
     
+    public Producto(String productoID, String nombre, String marca, float costo) {
+        this.productoID = productoID;
+        this.nombre = nombre;
+        this.costo = costo;
+        this.marca = marca;
+    }
+    
     public Producto(String nombre, String marca, float costo, String productoID, int numDeRegistro){
         this.nombre = nombre;
         this.costo = costo;

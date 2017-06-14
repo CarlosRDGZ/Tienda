@@ -13,14 +13,20 @@ public class Compra {
     
     private String idProducto;
     private String idTarjeta;
-    private int tipo;
+    private String tipo;
     private String fecha;
     private String hora;
     private int numRegistro;
     
     public Compra(){}
+    
+    public Compra(String idProducto, String idTarjeta, String tipo) {
+        this.idProducto = idProducto;
+        this.idTarjeta = idTarjeta;
+        this.tipo = tipo;
+    }
 
-    public Compra(String idProducto, String idTarjeta, int tipo, String fecha, String hora, int numRegistro) {
+    public Compra(String idProducto, String idTarjeta, String tipo, String fecha, String hora, int numRegistro) {
         this.idProducto = idProducto;
         this.idTarjeta = idTarjeta;
         this.tipo = tipo;
@@ -37,7 +43,7 @@ public class Compra {
         return idTarjeta;
     }
 
-    public int getTipo() {
+    public String getTipo() {
         return tipo;
     }
 
@@ -61,7 +67,7 @@ public class Compra {
         this.idTarjeta = idTarjeta;
     }
 
-    public void setTipo(int tipo) {
+    public void setTipo(String tipo) {
         this.tipo = tipo;
     }
 
