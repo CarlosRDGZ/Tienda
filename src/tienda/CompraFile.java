@@ -11,7 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class CompraFile extends Archivo<Compra> {
-    private final int RECORD_SIZE = 24;
+    private final int RECORD_SIZE = 49;
 
     public CompraFile(String nombreArchivo) {
         super(nombreArchivo);
@@ -53,7 +53,9 @@ public class CompraFile extends Archivo<Compra> {
             archivo.read(bIDTarjeta);
             String idTarjeta = new String(bIDTarjeta);
             
-            int tipo = archivo.readInt();
+            byte[] bTipo = new byte[8];
+            archivo.read(bTipo);
+            String tipo = new String(bTipo);
             
             byte[] bFecha = new byte[10];
             archivo.read(bFecha);
@@ -75,11 +77,13 @@ public class CompraFile extends Archivo<Compra> {
     @Override
     void grabarRegistro(Compra compra, int numDeRegistro) {
         try {
-            archivo.seek(numDeRegistro);
+            archivo.seek(numDeRegistro * RECORD_SIZE);
             
             archivo.writeBytes(compra.getIdProducto());
             
             archivo.writeBytes(compra.getIdTarjeta());
+            
+            archivo.writeBytes(setLongitudString(compra.getTipo(), 8));
             
             archivo.writeBytes(compra.getFecha());
             

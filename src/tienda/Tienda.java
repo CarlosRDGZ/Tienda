@@ -11,6 +11,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
 
     private boolean login;
     private boolean adminLogin;
+    private boolean fileFound;
     
     private ArchivoTarjeta tArch;
     private ArrayList<Tarjeta> tArray;
@@ -24,16 +25,27 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     private ArrayList<Producto> prodArray;
     private ControladorProductos prodCtrl;
     
+    private CompraFile compArch;
+    private ArrayList<Compra> compArray;
+    private ControladorCompra compCtrl;
+    
     private final DefaultTableModel model;
+    private final DefaultTableModel compModel;
     
     private LlaveAdmin adminSystem;
     private LlaveTarjeta tarjSystem;
+    
+    private Tarjeta tarjetaActiva;
+    private Producto productoSelec;
+    
+    private ArrayList<Compra> comprasTarjeta;
 
     public Tienda() {
         initComponents();
         
         login = false;
-        adminLogin =false;
+        adminLogin = false;
+        fileFound = false;
         
         tArch = new ArchivoTarjeta("tarjetas");
         tArray = tArch.leerTodos();
@@ -46,6 +58,10 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         prodArch = new ArchivoProducto("productos");
         prodArray = prodArch.leerTodos();
         prodCtrl = new ControladorProductos();
+        
+        compArch = new CompraFile("compras");
+        compArray = compArch.leerTodos();
+        compCtrl = new ControladorCompra();
         
         frmLogin.setSize(frmLogin.getPreferredSize());
         frmLogin.setResizable(false);
@@ -62,13 +78,29 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         
         btnAgregarTarjeta.setVisible(false);
         
+        btnContinuarCompraEfectivo.setVisible(false);
+        btnCancelarCompra.setVisible(false);
+        lblPantallaComprarEfectivo.setVisible(false);
+        lblPantallaComprarPuntos.setVisible(false);
+        btnPuntos.setVisible(false);
+        btnEfectivo.setVisible(false);
+        lblOpcionesCompra.setVisible(false);
+        btnContinuarComprarPuntos.setVisible(false);
+        lblDetallesCompra.setVisible(false);
+        
+        frmComprasTarjeta.setSize(frmComprasTarjeta.getPreferredSize());
+        frmComprasTarjeta.setResizable(false);
+        
+        frmDetallesProducto.setSize(frmDetallesProducto.getPreferredSize());
         
         model = (DefaultTableModel) tblProductos.getModel();
         DefaultTableModel tabla = model;
-        for(Producto producto:prodArray)
+        prodArray.forEach((producto) -> {
             addToTable(producto, tabla);
+        });
         tblProductos.setModel(tabla);
         
+        compModel = (DefaultTableModel) tblComprasTarjeta.getModel();
     }
 
     /**
@@ -90,6 +122,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         txtMaternoTarj = new javax.swing.JTextField();
         txtNombreTarj = new javax.swing.JTextField();
         pswTarjeta = new javax.swing.JPasswordField();
+        btnGuardarTarjeta = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         frmLogin = new javax.swing.JFrame();
         pswContra = new javax.swing.JPasswordField();
@@ -100,10 +133,33 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         pswPrimerContra = new javax.swing.JPasswordField();
         btnGuardarPrimero = new javax.swing.JButton();
         lblPrimerUso = new javax.swing.JLabel();
+        dlgComprar = new javax.swing.JDialog();
+        btnContinuarCompraEfectivo = new javax.swing.JButton();
+        btnCancelarCompra = new javax.swing.JButton();
+        btnPuntos = new javax.swing.JButton();
+        btnEfectivo = new javax.swing.JButton();
+        btnContinuarComprarPuntos = new javax.swing.JButton();
+        lblDetallesCompra = new javax.swing.JLabel();
+        lblOpcionesCompra = new javax.swing.JLabel();
+        lblPantallaComprarPuntos = new javax.swing.JLabel();
+        lblPantallaComprarEfectivo = new javax.swing.JLabel();
+        frmComprasTarjeta = new javax.swing.JFrame();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tblComprasTarjeta = new javax.swing.JTable();
+        lblCompras = new javax.swing.JLabel();
+        frmDetallesProducto = new javax.swing.JFrame();
+        txtCostoProd = new javax.swing.JTextField();
+        txtCostoPunt = new javax.swing.JTextField();
+        txtPuntosBonif = new javax.swing.JTextField();
+        txtNombreProd = new javax.swing.JTextField();
+        txtMarcaProd = new javax.swing.JTextField();
+        btnComprarProd = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
         btnComprar = new javax.swing.JButton();
         btnDetalles = new javax.swing.JButton();
         btnAgregarProducto = new javax.swing.JButton();
         btnAgregarTarjeta = new javax.swing.JButton();
+        btnVerCompras = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblProductos = new javax.swing.JTable();
         lblPuntos = new javax.swing.JLabel();
@@ -112,6 +168,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         lblPantallaInicio = new javax.swing.JLabel();
 
         frmNvProducto.setMinimumSize(new java.awt.Dimension(364, 246));
+        frmNvProducto.setPreferredSize(new java.awt.Dimension(364, 246));
 
         txtNombreNvProd.setText("nombre");
         txtNombreNvProd.addActionListener(new java.awt.event.ActionListener() {
@@ -160,7 +217,8 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         );
 
         frmNvTarjeta.setTitle("Nueva tarjeta");
-        frmNvTarjeta.setMinimumSize(new java.awt.Dimension(610, 500));
+        frmNvTarjeta.setMinimumSize(new java.awt.Dimension(534, 446));
+        frmNvTarjeta.setPreferredSize(new java.awt.Dimension(534, 446));
         frmNvTarjeta.getContentPane().setLayout(null);
 
         txtPaternoTarj.setText("paterno");
@@ -176,6 +234,15 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         txtNombreTarj.setBounds(250, 120, 220, 20);
         frmNvTarjeta.getContentPane().add(pswTarjeta);
         pswTarjeta.setBounds(250, 310, 220, 20);
+
+        btnGuardarTarjeta.setText("Guardar");
+        btnGuardarTarjeta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarTarjetaActionPerformed(evt);
+            }
+        });
+        frmNvTarjeta.getContentPane().add(btnGuardarTarjeta);
+        btnGuardarTarjeta.setBounds(390, 360, 71, 23);
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tienda/Nuevatarjeta.png"))); // NOI18N
         frmNvTarjeta.getContentPane().add(jLabel1);
@@ -238,6 +305,164 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         frmPrimerUso.getContentPane().add(lblPrimerUso);
         lblPrimerUso.setBounds(0, -60, 320, 220);
 
+        dlgComprar.setTitle("Comprar");
+        dlgComprar.setMaximumSize(new java.awt.Dimension(262, 163));
+        dlgComprar.setMinimumSize(new java.awt.Dimension(262, 163));
+        dlgComprar.setPreferredSize(new java.awt.Dimension(262, 163));
+        dlgComprar.getContentPane().setLayout(null);
+
+        btnContinuarCompraEfectivo.setText("Comprar");
+        btnContinuarCompraEfectivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnContinuarCompraEfectivoActionPerformed(evt);
+            }
+        });
+        dlgComprar.getContentPane().add(btnContinuarCompraEfectivo);
+        btnContinuarCompraEfectivo.setBounds(150, 90, 73, 23);
+
+        btnCancelarCompra.setText("Cancelar");
+        btnCancelarCompra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarCompraActionPerformed(evt);
+            }
+        });
+        dlgComprar.getContentPane().add(btnCancelarCompra);
+        btnCancelarCompra.setBounds(30, 90, 75, 23);
+
+        btnPuntos.setText("Puntos");
+        btnPuntos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPuntosActionPerformed(evt);
+            }
+        });
+        dlgComprar.getContentPane().add(btnPuntos);
+        btnPuntos.setBounds(30, 90, 65, 23);
+
+        btnEfectivo.setText("Efectivo");
+        btnEfectivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEfectivoActionPerformed(evt);
+            }
+        });
+        dlgComprar.getContentPane().add(btnEfectivo);
+        btnEfectivo.setBounds(150, 90, 71, 23);
+
+        btnContinuarComprarPuntos.setText("Comprar");
+        btnContinuarComprarPuntos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnContinuarComprarPuntosActionPerformed(evt);
+            }
+        });
+        dlgComprar.getContentPane().add(btnContinuarComprarPuntos);
+        btnContinuarComprarPuntos.setBounds(150, 90, 73, 23);
+
+        lblDetallesCompra.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblDetallesCompra.setText("Detalles");
+        dlgComprar.getContentPane().add(lblDetallesCompra);
+        lblDetallesCompra.setBounds(40, 60, 190, 14);
+
+        lblOpcionesCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tienda/OpcionesCompra.png"))); // NOI18N
+        dlgComprar.getContentPane().add(lblOpcionesCompra);
+        lblOpcionesCompra.setBounds(0, 0, 280, 150);
+
+        lblPantallaComprarPuntos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tienda/CompraConPuntos.png"))); // NOI18N
+        dlgComprar.getContentPane().add(lblPantallaComprarPuntos);
+        lblPantallaComprarPuntos.setBounds(0, 0, 300, 150);
+
+        lblPantallaComprarEfectivo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tienda/CompraConEfectivo.png"))); // NOI18N
+        dlgComprar.getContentPane().add(lblPantallaComprarEfectivo);
+        lblPantallaComprarEfectivo.setBounds(0, 0, 290, 150);
+
+        frmComprasTarjeta.setMaximumSize(new java.awt.Dimension(485, 383));
+        frmComprasTarjeta.setMinimumSize(new java.awt.Dimension(485, 383));
+        frmComprasTarjeta.setPreferredSize(new java.awt.Dimension(485, 383));
+        frmComprasTarjeta.setResizable(false);
+        frmComprasTarjeta.getContentPane().setLayout(null);
+
+        tblComprasTarjeta.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Fecha", "Hora", "Codigo", "Nombre", "Tipo"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jScrollPane3.setViewportView(tblComprasTarjeta);
+
+        frmComprasTarjeta.getContentPane().add(jScrollPane3);
+        jScrollPane3.setBounds(20, 80, 440, 258);
+
+        lblCompras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tienda/PantallaRegistroComprasTarjeta.png"))); // NOI18N
+        frmComprasTarjeta.getContentPane().add(lblCompras);
+        lblCompras.setBounds(-10, -10, 490, 520);
+
+        frmDetallesProducto.setMaximumSize(new java.awt.Dimension(510, 436));
+        frmDetallesProducto.setMinimumSize(new java.awt.Dimension(510, 436));
+        frmDetallesProducto.setPreferredSize(new java.awt.Dimension(510, 436));
+        frmDetallesProducto.setResizable(false);
+        frmDetallesProducto.getContentPane().setLayout(null);
+
+        txtCostoProd.setEditable(false);
+        txtCostoProd.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtCostoProd.setText("Costo");
+        frmDetallesProducto.getContentPane().add(txtCostoProd);
+        txtCostoProd.setBounds(190, 190, 220, 23);
+
+        txtCostoPunt.setEditable(false);
+        txtCostoPunt.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtCostoPunt.setText("Puntos-");
+        txtCostoPunt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCostoPuntActionPerformed(evt);
+            }
+        });
+        frmDetallesProducto.getContentPane().add(txtCostoPunt);
+        txtCostoPunt.setBounds(190, 320, 220, 23);
+
+        txtPuntosBonif.setEditable(false);
+        txtPuntosBonif.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtPuntosBonif.setText("Puntos+");
+        frmDetallesProducto.getContentPane().add(txtPuntosBonif);
+        txtPuntosBonif.setBounds(190, 260, 220, 23);
+
+        txtNombreProd.setEditable(false);
+        txtNombreProd.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtNombreProd.setText("Nombre");
+        frmDetallesProducto.getContentPane().add(txtNombreProd);
+        txtNombreProd.setBounds(190, 90, 220, 23);
+
+        txtMarcaProd.setEditable(false);
+        txtMarcaProd.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtMarcaProd.setText("Marca");
+        txtMarcaProd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtMarcaProdActionPerformed(evt);
+            }
+        });
+        frmDetallesProducto.getContentPane().add(txtMarcaProd);
+        txtMarcaProd.setBounds(190, 140, 220, 23);
+
+        btnComprarProd.setText("Comprar");
+        btnComprarProd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnComprarProdActionPerformed(evt);
+            }
+        });
+        frmDetallesProducto.getContentPane().add(btnComprarProd);
+        btnComprarProd.setBounds(330, 370, 73, 23);
+
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tienda/DetallesDeProducto.png"))); // NOI18N
+        frmDetallesProducto.getContentPane().add(jLabel3);
+        jLabel3.setBounds(0, 0, 500, 500);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(670, 559));
         setPreferredSize(new java.awt.Dimension(670, 559));
@@ -264,6 +489,11 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         btnComprar.setBounds(540, 490, 73, 20);
 
         btnDetalles.setText("Detalles");
+        btnDetalles.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDetallesActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnDetalles);
         btnDetalles.setBounds(450, 490, 71, 23);
 
@@ -284,6 +514,15 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         });
         getContentPane().add(btnAgregarTarjeta);
         btnAgregarTarjeta.setBounds(510, 140, 110, 23);
+
+        btnVerCompras.setText("Ver Compras");
+        btnVerCompras.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVerComprasActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnVerCompras);
+        btnVerCompras.setBounds(510, 180, 100, 23);
 
         tblProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -313,13 +552,15 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         getContentPane().add(jScrollPane1);
         jScrollPane1.setBounds(40, 130, 430, 340);
 
+        lblPuntos.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblPuntos.setText("Puntos:");
         getContentPane().add(lblPuntos);
-        lblPuntos.setBounds(380, 80, 80, 14);
+        lblPuntos.setBounds(380, 90, 80, 17);
 
+        lblNombre.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblNombre.setText("Nombre:");
         getContentPane().add(lblNombre);
-        lblNombre.setBounds(380, 40, 210, 14);
+        lblNombre.setBounds(380, 60, 210, 14);
 
         lblPantalla.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tienda/PantallaUniversal.png"))); // NOI18N
         lblPantalla.setMaximumSize(new java.awt.Dimension(670, 540));
@@ -337,7 +578,28 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnComprarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnComprarActionPerformed
-        // TODO add your handling code here:
+        int fila = tblProductos.getSelectedRow();
+        if(fila > -1) {
+            productoSelec = valorDeFila(fila);
+            if(tarjetaActiva.getPuntos() >= (int)(productoSelec.getCosto()*115)/100) {
+                btnPuntos.setVisible(true);
+                btnEfectivo.setVisible(true);
+                lblOpcionesCompra.setVisible(true);
+            }
+            else {
+                btnContinuarCompraEfectivo.setVisible(true);
+                btnCancelarCompra.setVisible(true);
+                lblPantallaComprarEfectivo.setVisible(true);
+                lblDetallesCompra.setText("Costo $" + productoSelec.getCosto() +
+                        ". Se bonificaran "+ (int)(productoSelec.getCosto()/10) + " puntos");
+                lblDetallesCompra.setVisible(true);
+            }
+            dlgComprar.setVisible(true);
+        }
+        else {
+            JOptionPane.showMessageDialog(this, "Seleccione un producto antes de comprar");
+        }
+        
     }//GEN-LAST:event_btnComprarActionPerformed
 
     private void pswContraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pswContraActionPerformed
@@ -357,7 +619,6 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
             
             String contrasenia = "";
             String contraLlave = "";
-            Tarjeta tarjeta = null;
             
             if(!adminLogin) {
                 Tarjeta tarjetaLlave = tarjSystem.leerDatos();
@@ -366,12 +627,13 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
                     if(tar.getIdTarjeta().equals(tarjetaLlave.getIdTarjeta())) {
                         contrasenia = tar.getContrasenia();
                         contraLlave = tarjetaLlave.getContrasenia();
-                        tarjeta = tar;
+                        tarjetaActiva = tar;
                         break;
                     }
                 }
             }
             else {
+                System.out.println("Ingreso de Administrador");
                 adminLogin = true;
                 Administrador adminLlave = adminSystem.leerDatos();
                 for(Administrador admin:adminArray) {
@@ -379,6 +641,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
                     if(admin.getUsuario().equals(adminLlave.getUsuario())) {
                         contrasenia = admin.getContrasenia();
                         contraLlave = adminLlave.getContrasenia();
+                        System.out.println("Usuario Encontrado");
                         break;
                     }
                 }      
@@ -394,18 +657,18 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
                     login = true;
 
                     if(!adminLogin) {
-                        lblNombre.setText("Nombre:" + tarjeta.getNombre() + " " +
-
-                            tarjeta.getApPaterno() + " " + tarjeta.getApMaterno());
-                        lblPuntos.setText("Puntos: " + tarjeta.getPuntos());
+                        lblNombre.setText("Nombre: " + tarjetaActiva.getNombre() + " " +
+                            tarjetaActiva.getApPaterno() + " " + tarjetaActiva.getApMaterno());
+                        lblPuntos.setText("Puntos: " + tarjetaActiva.getPuntos());
+                        btnVerCompras.setVisible(true);
                     }
                     else {
                         btnAgregarProducto.setVisible(true);
                         lblNombre.setVisible(false);
                         lblPuntos.setVisible(false);
                         btnAgregarTarjeta.setVisible(true);
+                        btnComprar.setVisible(false);
                     }
-                    
                 }
                 else
                     JOptionPane.showMessageDialog(frmLogin, "Contraseña incorrecta", "Error", JOptionPane.ERROR_MESSAGE);
@@ -448,12 +711,12 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     }//GEN-LAST:event_formMouseMoved
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
-        if((!frmLogin.isVisible() || !frmLogin.isActive()) && !login)
+        if((!frmLogin.isVisible() || !frmLogin.isActive()) && !login && fileFound)
             frmLogin.setVisible(true);
     }//GEN-LAST:event_formMouseClicked
 
     private void btnGuardarPrimeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarPrimeroActionPerformed
-        if(!txtPrimerUsuario.getText().isEmpty() && !pswPrimerContra.getText().isEmpty()) {
+        if(!pswPrimerContra.getText().isEmpty()) {
             Administrador admin = new Administrador(txtPrimerUsuario.getText(),
                     ControladorAdministrador.crearSeguridad(pswPrimerContra.getText()));
             adminCtrl.crear(admin, adminArch, adminArray);
@@ -462,7 +725,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
             for(File path:paths) {
                 File file = new File(path.toString() + "/Program Files");
                 if(!file.exists()) {
-                    File folder = new File(paths[paths.length -1].toString() + "/Tarjeta");
+                    File folder = new File(path.toString() + "/Tarjeta");
                     folder.mkdir();
                     LlaveAdmin llave = new LlaveAdmin(folder);
                     llave.escrbirCodigoAcceso();
@@ -489,8 +752,173 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         txtNombreTarj.setText("");
         txtPaternoTarj.setText("");
         txtMaternoTarj.setText("");
+        pswTarjeta.setText("");
         frmNvTarjeta.setVisible(true);
     }//GEN-LAST:event_btnAgregarTarjetaActionPerformed
+
+    private void btnGuardarTarjetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarTarjetaActionPerformed
+        String contra = ControladorTarjeta.crearSeguridad(pswTarjeta.getText());
+        String nombre = txtNombreTarj.getText();
+        String paterno = txtPaternoTarj.getText();
+        String materno = txtMaternoTarj.getText();
+       
+        if(!contra.isEmpty() &&
+                !nombre.isEmpty() &&
+                !paterno.isEmpty() &&
+                !materno.isEmpty()) {
+            Tarjeta tarjeta = new Tarjeta(paterno, materno, nombre, contra);
+            tCtrl.crear(tarjeta, tArch, tArray);
+            File[] paths = File.listRoots();
+            int i = 0;
+            for(File path:paths) {
+                System.out.println(path.toString());
+                File file = new File(path.toString() + "/Program Files");
+                File folder = new File(path.toString() + "/Tarjeta");
+                if(!file.exists() && path.canWrite() && !folder.exists()) {
+                    folder.mkdir();
+                    LlaveTarjeta llave = new LlaveTarjeta(folder);
+                    llave.escrbirCodigoAcceso();
+                    llave.escribirDatos(tarjeta);
+                    frmNvTarjeta.setVisible(false);
+                    break;
+                }
+                i++;
+            }
+            if(i == paths.length) {
+                JOptionPane.showMessageDialog(frmPrimerUso,"Inserte un USB");
+                tArch.eliminar();
+                tArray.remove(tArray.size() - 1);
+            }
+        }
+        else {
+            JOptionPane.showMessageDialog(frmPrimerUso, "Debe llenar todos los campos", "Error",JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnGuardarTarjetaActionPerformed
+
+    private void btnEfectivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEfectivoActionPerformed
+        btnPuntos.setVisible(false);
+        btnEfectivo.setVisible(false);
+        lblOpcionesCompra.setVisible(false);
+        lblPantallaComprarPuntos.setVisible(false);
+        lblPantallaComprarEfectivo.setVisible(true);
+        lblDetallesCompra.setText("Costo $" + productoSelec.getCosto() +
+                        ". Se bonificaran "+ (int)(productoSelec.getCosto()/10) + " puntos");
+        lblDetallesCompra.setVisible(true);
+        btnContinuarCompraEfectivo.setVisible(true);
+        btnCancelarCompra.setVisible(true);
+    }//GEN-LAST:event_btnEfectivoActionPerformed
+
+    private void btnContinuarCompraEfectivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinuarCompraEfectivoActionPerformed
+        Compra compra = new Compra(productoSelec.getCodigo(),
+                tarjetaActiva.getIdTarjeta(), "EFECTIVO");
+        compCtrl.crear(compra, compArch, compArray);
+        tarjSystem.registrarCompra(compra);
+        tCtrl.comprarEfectivo(tarjetaActiva, tArch, tArray, tarjSystem, productoSelec);
+        lblPuntos.setText("Puntos: " + tarjetaActiva.getPuntos());
+        btnContinuarCompraEfectivo.setVisible(false);
+        btnCancelarCompra.setVisible(false);
+        lblPantallaComprarEfectivo.setVisible(false);
+        lblDetallesCompra.setVisible(false);
+        dlgComprar.setVisible(false);
+    }//GEN-LAST:event_btnContinuarCompraEfectivoActionPerformed
+
+    private void btnContinuarComprarPuntosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinuarComprarPuntosActionPerformed
+        Compra compra = new Compra(productoSelec.getCodigo(),
+                tarjetaActiva.getIdTarjeta(), "PUNTOS");
+        compCtrl.crear(compra, compArch, compArray);
+        tarjSystem.registrarCompra(compra);
+        tCtrl.comprarPuntos(tarjetaActiva, tArch, tArray, tarjSystem, productoSelec);
+        lblPuntos.setText("Puntos: " + tarjetaActiva.getPuntos());
+        btnContinuarComprarPuntos.setVisible(false);
+        btnCancelarCompra.setVisible(false);
+        lblPantallaComprarEfectivo.setVisible(false);
+        lblDetallesCompra.setVisible(false);
+        dlgComprar.setVisible(false);
+    }//GEN-LAST:event_btnContinuarComprarPuntosActionPerformed
+
+    private void btnPuntosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPuntosActionPerformed
+        btnPuntos.setVisible(false);
+        btnEfectivo.setVisible(false);
+        lblOpcionesCompra.setVisible(false);
+        lblPantallaComprarEfectivo.setVisible(false);
+        lblPantallaComprarPuntos.setVisible(true);
+        lblDetallesCompra.setText("Se restarán " +
+                (int)(productoSelec.getCosto()*115)/100 + " puntos");
+        lblDetallesCompra.setVisible(true);
+        btnContinuarComprarPuntos.setVisible(true);
+        btnCancelarCompra.setVisible(true);
+    }//GEN-LAST:event_btnPuntosActionPerformed
+
+    private void btnDetallesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetallesActionPerformed
+        int fila = tblProductos.getSelectedRow();
+        if(fila > -1) {
+            productoSelec = valorDeFila(fila);
+            txtCostoProd.setText("$" + productoSelec.getCosto());
+            txtMarcaProd.setText(productoSelec.getMarca());
+            txtNombreProd.setText(productoSelec.getNombre());
+            txtPuntosBonif.setText("" + (int)(productoSelec.getCosto()/10));
+            txtCostoPunt.setText("" + (int)(productoSelec.getCosto()*115)/100);
+            frmDetallesProducto.setVisible(true);
+        }
+        else {
+            JOptionPane.showMessageDialog(this, "Seleccione un producto para visualizar sus detalles");
+        }
+    }//GEN-LAST:event_btnDetallesActionPerformed
+
+    private void btnVerComprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerComprasActionPerformed
+        comprasTarjeta = tarjSystem.leerTodasCompras();
+        DefaultTableModel modelo = compModel;
+        comprasTarjeta.forEach((compra) -> {
+            addCompraATabla(compra, modelo);
+        });
+        frmComprasTarjeta.setVisible(true);
+    }//GEN-LAST:event_btnVerComprasActionPerformed
+
+    private void btnCancelarCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarCompraActionPerformed
+        btnContinuarCompraEfectivo.setVisible(false);
+        btnContinuarComprarPuntos.setVisible(false);
+        btnEfectivo.setVisible(false);
+        btnPuntos.setVisible(false);
+        btnCancelarCompra.setVisible(false);
+        lblPantallaComprarEfectivo.setVisible(false);
+        lblOpcionesCompra.setVisible(false);
+        lblPantallaComprarPuntos.setVisible(false);
+        lblDetallesCompra.setVisible(false);
+        dlgComprar.setVisible(false);
+    }//GEN-LAST:event_btnCancelarCompraActionPerformed
+
+    private void txtMarcaProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMarcaProdActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtMarcaProdActionPerformed
+
+    private void txtCostoPuntActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCostoPuntActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCostoPuntActionPerformed
+
+    private void btnComprarProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnComprarProdActionPerformed
+        int fila = tblProductos.getSelectedRow();
+        if(fila > -1) {
+            productoSelec = valorDeFila(fila);
+            if(tarjetaActiva.getPuntos() >= (int)(productoSelec.getCosto()*115)/100) {
+                btnPuntos.setVisible(true);
+                btnEfectivo.setVisible(true);
+                lblOpcionesCompra.setVisible(true);
+            }
+            else {
+                btnContinuarCompraEfectivo.setVisible(true);
+                btnCancelarCompra.setVisible(true);
+                lblPantallaComprarEfectivo.setVisible(true);
+                lblDetallesCompra.setText("Costo $" + productoSelec.getCosto() +
+                        ". Se bonificaran "+ (int)(productoSelec.getCosto()/10) + " puntos");
+                lblDetallesCompra.setVisible(true);
+            }
+            dlgComprar.setVisible(true);
+            frmDetallesProducto.setVisible(false);
+        }
+        else {
+            JOptionPane.showMessageDialog(frmDetallesProducto, "Seleccione un producto antes de comprar");
+        }
+    }//GEN-LAST:event_btnComprarProdActionPerformed
     
     private void setPantallaPrincipalVisible(boolean visible) {
         jScrollPane1.setVisible(visible);
@@ -500,6 +928,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         lblPantalla.setVisible(visible);
         lblNombre.setVisible(visible);
         lblPuntos.setVisible(visible);
+        btnVerCompras.setVisible(visible);
     }
     
     private void addToTable(Producto prod, DefaultTableModel model)
@@ -523,6 +952,32 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
             }
         }
         return false;
+    }
+    
+    private Producto valorDeFila(int fila) {
+        String id = (String) tblProductos.getValueAt(fila, 0);
+        String nombre = (String) tblProductos.getValueAt(fila, 1);
+        String marca = (String) tblProductos.getValueAt(fila, 2);
+        String precio = (String) tblProductos.getValueAt(fila, 3);
+        float costo = Float.valueOf(precio.substring(1));
+        return new Producto(id, nombre, marca, costo);
+    }
+    
+    private void addCompraATabla(Compra compra, DefaultTableModel model) {
+        String nombre = "";
+        String codigo = compra.getIdProducto();
+        for(Producto prod:prodArray){
+            if(compra.getIdProducto().equals(prod.getCodigo())) {
+                nombre = prod.getNombre();
+                break;
+            }
+        }
+        String fecha = compra.getFecha();
+        String hora = compra.getHora();
+        String tipo = compra.getTipo();
+        
+        String[] nuevaCompra = {fecha, hora, codigo, nombre, tipo};
+        model.addRow(nuevaCompra);
     }
     
     public static void main(String args[]) {
@@ -566,8 +1021,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
                 frmPrimerUso.setVisible(true);
                 login = true;
             }
-
-            boolean fileFound = false;
+            
             while(fileFound == false){
 
                 Thread.sleep(2000);
@@ -579,7 +1033,6 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
                     File usuario = new File(path.toString() + "/Tarjeta","robin.dmc");
 
                     if(llave.exists() && usuario.exists()) {
-                        //System.out.println("Tajeta Encontrada");
                         File carpeta = new File(path.toString() + "/Tarjeta");
                         
                         LlaveAdmin admin = new LlaveAdmin(carpeta);
@@ -598,14 +1051,13 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
                                 }
                             }
                         }
-                        else if("Tarjeta de Lealtad".equals(tarj.leerDatos())) {
+                        else if("Tarjeta de Lealtad".equals(tarj.leerCodigo())) {
                             Tarjeta tarjeta = tarj.leerDatos();
                             for(Tarjeta t:tArray) {
                                 if(t.getApMaterno().equals(tarjeta.getApMaterno()) &&
                                         t.getApPaterno().equals(tarjeta.getApPaterno()) &&
                                         t.getNombre().equals(tarjeta.getNombre()) &&
                                         t.getContrasenia().equals(tarjeta.getContrasenia()) &&
-                                        t.getNumeroDeRegistro() == tarjeta.getNumeroDeRegistro() &&
                                         t.getIdTarjeta().equals(tarjeta.getIdTarjeta())) {
                                     fileFound = true;
                                     tarjSystem = new LlaveTarjeta(carpeta);
@@ -613,13 +1065,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
                                 } 
                             }
                         }
-                        //    System.out.println("Tarjeta Valida");
-                      //  else
-                         //  System.out.println("Tarjeta No Valida");
                     }
-                   // else {
-                      //  System.out.println("Tarjeta No Encontrada");
-                  //  }
                 }
             }
             frmLogin.setVisible(true);
@@ -633,18 +1079,36 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     private javax.swing.JButton btnAceder;
     private javax.swing.JButton btnAgregarProducto;
     private javax.swing.JButton btnAgregarTarjeta;
+    private javax.swing.JButton btnCancelarCompra;
     private javax.swing.JButton btnComprar;
+    private javax.swing.JButton btnComprarProd;
+    private javax.swing.JButton btnContinuarCompraEfectivo;
+    private javax.swing.JButton btnContinuarComprarPuntos;
     private javax.swing.JButton btnDetalles;
+    private javax.swing.JButton btnEfectivo;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnGuardarPrimero;
+    private javax.swing.JButton btnGuardarTarjeta;
+    private javax.swing.JButton btnPuntos;
+    private javax.swing.JButton btnVerCompras;
+    private javax.swing.JDialog dlgComprar;
+    private javax.swing.JFrame frmComprasTarjeta;
+    private javax.swing.JFrame frmDetallesProducto;
     private javax.swing.JFrame frmLogin;
     private javax.swing.JFrame frmNvProducto;
     private javax.swing.JFrame frmNvTarjeta;
     private javax.swing.JFrame frmPrimerUso;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JLabel lblCompras;
+    private javax.swing.JLabel lblDetallesCompra;
     private javax.swing.JLabel lblNombre;
+    private javax.swing.JLabel lblOpcionesCompra;
     private javax.swing.JLabel lblPantalla;
+    private javax.swing.JLabel lblPantallaComprarEfectivo;
+    private javax.swing.JLabel lblPantallaComprarPuntos;
     private javax.swing.JLabel lblPantallaInicio;
     private javax.swing.JLabel lblPantallaLogin;
     private javax.swing.JLabel lblPrimerUso;
@@ -652,13 +1116,19 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
     private javax.swing.JPasswordField pswContra;
     private javax.swing.JPasswordField pswPrimerContra;
     private javax.swing.JPasswordField pswTarjeta;
+    private javax.swing.JTable tblComprasTarjeta;
     private javax.swing.JTable tblProductos;
     private javax.swing.JTextField txtCostoNvProd;
+    private javax.swing.JTextField txtCostoProd;
+    private javax.swing.JTextField txtCostoPunt;
     private javax.swing.JTextField txtMarcaNvProd;
+    private javax.swing.JTextField txtMarcaProd;
     private javax.swing.JTextField txtMaternoTarj;
     private javax.swing.JTextField txtNombreNvProd;
+    private javax.swing.JTextField txtNombreProd;
     private javax.swing.JTextField txtNombreTarj;
     private javax.swing.JTextField txtPaternoTarj;
     private javax.swing.JTextField txtPrimerUsuario;
+    private javax.swing.JTextField txtPuntosBonif;
     // End of variables declaration//GEN-END:variables
 }

@@ -47,4 +47,30 @@ public class ControladorTarjeta extends ControladorUsuario<Tarjeta>{
         llave.escrbirCodigoAcceso();
         llave.escribirDatos(e);
     }
+    
+    public void comprarEfectivo(Tarjeta tarjeta, ArchivoTarjeta archivo,
+            List<Tarjeta> list, LlaveTarjeta llave, Producto producto) {
+        
+        int puntos = (int)producto.getCosto()/10;
+        tarjeta.setPuntos(tarjeta.getPuntos() + puntos);
+        
+        archivo.grabarRegistro(tarjeta, tarjeta.getNumeroDeRegistro());
+        
+        list.set(tarjeta.getNumeroDeRegistro(), tarjeta);
+        
+        llave.escribirDatos(tarjeta);
+    }
+    
+    public void comprarPuntos(Tarjeta tarjeta, ArchivoTarjeta archivo,
+            List<Tarjeta> list, LlaveTarjeta llave, Producto producto) {
+        
+        int puntos = ((int)producto.getCosto()*115)/100;
+        tarjeta.setPuntos(tarjeta.getPuntos() - puntos);
+        
+        archivo.grabarRegistro(tarjeta, tarjeta.getNumeroDeRegistro());
+        
+        list.set(tarjeta.getNumeroDeRegistro(), tarjeta);
+        
+        llave.escribirDatos(tarjeta);
+    }
 }
