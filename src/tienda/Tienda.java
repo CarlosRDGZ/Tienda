@@ -71,7 +71,7 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         frmLogin.setSize(frmLogin.getPreferredSize());
         frmLogin.setResizable(false);
         
-        frmNvProducto.setSize(frmNvProducto.getPreferredSize());
+        frmNvProducto.setSize(610, 438);
         frmNvProducto.setResizable(false);
         
         setPantallaPrincipalVisible(false);
@@ -284,7 +284,9 @@ public class Tienda extends javax.swing.JFrame implements Runnable{
         frmLogin.getContentPane().add(lblPantallaLogin);
         lblPantallaLogin.setBounds(-10, 0, 270, 150);
 
+        frmPrimerUso.setMaximumSize(new java.awt.Dimension(610, 438));
         frmPrimerUso.setMinimumSize(new java.awt.Dimension(310, 165));
+        frmPrimerUso.setPreferredSize(new java.awt.Dimension(610, 438));
         frmPrimerUso.setResizable(false);
         frmPrimerUso.getContentPane().setLayout(null);
 
